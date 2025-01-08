@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医院预约系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar a {
+            color: #2d3748;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            font-size: 1.1rem;
+        }
+        
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+        
+        .appointment-container {
+            max-width: 600px;
+            margin: 40px auto 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2d3748;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #84fab0;
+            box-shadow: 0 0 0 4px rgba(132, 250, 176, 0.15);
+        }
+        
+        button {
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1),
+                        0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 40px;
+            font-size: 1.75rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            border-radius: 2px;
+        }
+        
+        input::placeholder {
+            color: #a0aec0;
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232d3748' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 20px;
+            padding-right: 40px;
+        }
+        
+        @media (max-width: 640px) {
+            .appointment-container {
+                margin: 20px auto;
+                padding: 20px;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+                margin-bottom: 25px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .appointment-container {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* 添加禁用状态的按钮样式 */
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* 添加错误提示样式 */
+        .error-message {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            display: block;
+            opacity: 0;
+            height: 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .error-message.show {
+            opacity: 1;
+            height: 20px;
+            margin-top: 5px;
+        }
+        
+        input:invalid:not(:placeholder-shown):not([type="time"]):not([type="date"]):not(:focus),
+        select:invalid:not(:focus):not(:first-of-type) {
+            border-color: #e53e3e;
+        }
+        
+        /* 添加初始状态的边框颜色 */
+        input, select {
+            border: 2px solid #e2e8f0;
+        }
+        
+        /* 添加输入框的占位符 */
+        input[type="text"],
+        input[type="tel"] {
+            placeholder: " ";
+        }
+        
+        /* 添加抖动动画 */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px) rotate(-2deg); }
+            20%, 40%, 60%, 80% { transform: translateX(8px) rotate(2deg); }
+        }
+        
+        /* 添加淡入动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 添加提示框动画 */
+        @keyframes slideIn {
+            0% { 
+                transform: translateY(-100%) translateX(-50%);
+                opacity: 0;
+            }
+            100% { 
+                transform: translateY(0) translateX(-50%);
+                opacity: 1;
+            }
+        }
+        
+        .shake {
+            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both !important;
+            transform: translate3d(0, 0, 0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+        
+        /* 自定义提示框样式 */
+        .custom-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 300px;
+            transform-origin: top center;
+        }
+        
+        .custom-alert ul {
+            margin: 10px 0;
+            padding-left: 20px;
+            color: #e53e3e;
+        }
+        
+        .custom-alert h3 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+        }
+        
+        /* 添加成功提示框动画和样式 */
+        @keyframes successIn {
+            0% { 
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            50% { 
+                transform: translate(-50%, 10%);
+            }
+            100% { 
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes checkmark {
+            0% { 
+                transform: scale(0);
+            }
+            50% { 
+                transform: scale(1.2);
+            }
+            100% { 
+                transform: scale(1);
+            }
+        }
+        
+        .success-alert {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            text-align: center;
+            animation: successIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 300px;
+        }
+        
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: #84fab0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            animation: checkmark 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+        }
+        
+        .success-icon svg {
+            width: 30px;
+            height: 30px;
+            color: white;
+        }
+        
+        .success-title {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .success-message {
+            color: #718096;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+        
+        .doctor-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .doctor-title h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin: 0;
+            font-weight: 700;
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .doctor-title h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+        
+        /* 添加管理按钮样式 */
+        .admin-link {
+            position: fixed;
+            top: 20px;
+            right: 80px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            text-decoration: none;
+            color: #2d3748;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: none; /* 默认隐藏 */
+        }
+        
+        .admin-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .admin-link.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* 修改登录按钮样式 */
+        .login-btn {
+            position: fixed;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border: none;
+            color: #2d3748;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 9999;
+            width: 80px;
+            text-align: center;
+            height: 35px;
+            line-height: 35px;
+            padding: 0;
+        }
+        
+        .login-btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <button class="login-btn" id="loginBtn">登录</button>
+    <a href="admin.html" class="admin-link" id="adminLink">
+        <i class="fas fa-cog"></i> 后台管理
+    </a>
+    <div class="appointment-container">
+        <div class="doctor-title">
+            <h1>DR.Hee</h1>
+        </div>
+        <h2>在线预约</h2>
+        <form action="/submit-appointment" method="POST">
+            <div class="form-group">
+                <label for="name">姓名：</label>
+                <input type="text" id="name" name="name" required placeholder=" ">
+                <div class="error-message">请输入姓名</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">联系电话：</label>
+                <input type="tel" 
+                       id="phone" 
+                       name="phone" 
+                       pattern="^(01)[0-9]{8,9}$"
+                       placeholder="例如：0123456789"
+                       maxlength="11"
+                       required
+                >
+                <small style="color: #718096; display: block; margin-top: 5px;">
+                    请输入马来西亚手机号码（以01开头，共10-11位）
+                </small>
+                <div class="error-message">请输入有效的马来西亚手机号码</div>
+            </div>
+
+            <div class="form-group">
+                <label for="department">就诊科室：</label>
+                <select id="department" name="department" required>
+                    <option value="">请选择科室</option>
+                    <option value="内科">内科</option>
+                    <option value="外科">外科</option>
+                </select>
+                <div class="error-message">请选择就诊科室</div>
+            </div>
+
+            <div class="form-group">
+                <label for="appointmentDate">预约日期：</label>
+                <input type="date" 
+                       id="appointmentDate" 
+                       name="appointmentDate" 
+                       required
+                       readonly
+                       onfocus="this.blur()"
+                >
+            </div>
+
+            <script>
+                // 设置日期为当天
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const currentDate = `${year}-${month}-${day}`;
+                
+                document.getElementById('appointmentDate').value = currentDate;
+            </script>
+
+            <div class="form-group">
+                <label for="time">预约时间：</label>
+                <input type="time" 
+                       id="time" 
+                       name="time" 
+                       required
+                       style="cursor: pointer; padding-right: 10px;"
+                       onclick="this.showPicker()"
+                >
+                <div class="error-message">请选择预约时间</div>
+            </div>
+
+            <div class="form-group">
+                <label for="idCard">身份证号：</label>
+                <input type="text" id="idCard" name="idCard" required placeholder=" ">
+                <div class="error-message">请输入身份证号</div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit">提交预约</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.querySelector('form');
+        const submitButton = form.querySelector('button[type="submit"]');
+        const inputs = form.querySelectorAll('input, select');
+        
+        // 添加自定义提示框函数
+        function showCustomAlert(messages) {
+            // 移除已存在的提示框
+            const existingAlert = document.querySelector('.custom-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            // 创建新的提示框
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'custom-alert';
+            
+            // 添加标题
+            const title = document.createElement('h3');
+            title.textContent = '请完善以下信息：';
+            alertDiv.appendChild(title);
+            
+            // 添加错误信息列表
+            const ul = document.createElement('ul');
+            messages.forEach(msg => {
+                const li = document.createElement('li');
+                li.textContent = msg;
+                li.style.animation = 'fadeIn 0.3s ease-out forwards';
+                li.style.animationDelay = '0.2s';
+                li.style.opacity = '0';
+                ul.appendChild(li);
+            });
+            alertDiv.appendChild(ul);
+            
+            // 添加到页面
+            document.body.appendChild(alertDiv);
+            
+            // 3秒后自动移除
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => alertDiv.remove(), 500);
+            }, 3000);
+        }
+        
+        // 修改抖动效果函数
+        function shakeElement(element) {
+            // 先移除可能存在的shake类
+            element.classList.remove('shake');
+            // 强制重绘
+            void element.offsetWidth;
+            // 添加shake类触发动画
+            element.classList.add('shake');
+            // 显示错误提示
+            const errorMessage = element.parentElement.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.classList.add('show');
+            }
+            // 动画结束后移除类
+            setTimeout(() => {
+                element.classList.remove('shake');
+            }, 600);
+        }
+        
+        // 修改表单提交验证
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let errorMessages = [];
+            let errorFields = [];
+            
+            // 验证姓名
+            if (!form.name.value) {
+                errorMessages.push('请输入姓名');
+                errorFields.push(form.name);
+            }
+            
+            // 验证电话
+            const phonePattern = /^(01)[0-9]{8,9}$/;
+            if (!form.phone.value) {
+                errorMessages.push('请输入联系电话');
+                errorFields.push(form.phone);
+            } else if (!phonePattern.test(form.phone.value)) {
+                errorMessages.push('请输入有效的马来西亚手机号码');
+                errorFields.push(form.phone);
+            }
+            
+            // 验证科室
+            if (!form.department.value) {
+                errorMessages.push('请选择就诊科室');
+                errorFields.push(form.department);
+            }
+            
+            // 验证时间
+            if (!form.time.value) {
+                errorMessages.push('请选择预约时间');
+                errorFields.push(form.time);
+            }
+            
+            // 验证身份证
+            if (!form.idCard.value) {
+                errorMessages.push('请输入身份证号');
+                errorFields.push(form.idCard);
+            }
+            
+            // 如果有错误，显示错误信息
+            if (errorMessages.length > 0) {
+                showCustomAlert(errorMessages);
+                // 为每个错误字段添加抖动效果
+                errorFields.forEach(field => shakeElement(field));
+                return;
+            }
+            
+            // 如果验证通过，显示成功消息
+            showSuccessAlert();
+            form.reset();
+            document.getElementById('appointmentDate').value = currentDate;
+        });
+        
+        // 将设置日期的代码移到函数中，方便复用
+        function setTodayDate() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const currentDate = `${year}-${month}-${day}`;
+            document.getElementById('appointmentDate').value = currentDate;
+        }
+        
+        // 页面加载时设置日期
+        setTodayDate();
+        
+        // 监听表单重置事件，确保重置后也显示当天日期
+        form.addEventListener('reset', function() {
+            setTimeout(setTodayDate, 0);
+        });
+        
+        // 添加输入监听，当输入正确时隐藏错误提示
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const errorMessage = this.parentElement.querySelector('.error-message');
+                if (errorMessage) {
+                    if (this.validity.valid) {
+                        errorMessage.classList.remove('show');
+                    }
+                }
+            });
+        });
+        
+        // 添加成功提示框函数
+        function showSuccessAlert() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </div>
+                <div class="success-title">预约成功！</div>
+                <div class="success-message">您的预约已经成功提交</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            // 2秒后淡出并移除
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 2000);
+        }
+        
+        // 修改检查登录状态函数
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const adminLink = document.getElementById('adminLink');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (isLoggedIn) {
+                adminLink.classList.add('show');
+                loginBtn.textContent = '退出';
+            } else {
+                adminLink.classList.remove('show');
+                loginBtn.textContent = '登录';
+            }
+        }
+        
+        // 页面加载时检查登录状态
+        checkLoginStatus();
+        
+        // 添加快捷键触发登录框
+        document.addEventListener('keydown', function(e) {
+            // 按 Ctrl + L 触发登录框
+            if (e.ctrlKey && e.key === 'l') {
+                const username = prompt('请输入管理员账号：');
+                if (username === null) return;
+                
+                const password = prompt('请输入密码：');
+                if (password === null) return;
+                
+                if (username === 'Hayden' && password === 'Hayden0320') {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('adminName', 'Hayden');
+                    checkLoginStatus();
+                    showLoginSuccess();
+                } else if (password !== null) {
+                    showLoginError();
+                }
+            }
+            
+            // 按 Ctrl + Q 退出登录
+            if (e.ctrlKey && e.key === 'q') {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('adminName');
+                checkLoginStatus();
+                showLogoutSuccess();
+            }
+        });
+        
+        // 添加登录成功提示
+        function showLoginSuccess() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 6L9 17l-5-5"/>
+                    </svg>
+                </div>
+                <div class="success-title">登录成功</div>
+                <div class="success-message">欢迎回来，管理员 Hayden</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 2000);
+        }
+        
+        // 添加登录错误提示
+        function showLoginError() {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'custom-alert';
+            
+            errorDiv.innerHTML = `
+                <h3 style="color: #e53e3e;">登录失败</h3>
+                <div style="color: #718096;">账号或密码错误，请重试</div>
+            `;
+            
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.style.animation = 'slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => errorDiv.remove(), 500);
+            }, 2000);
+        }
+        
+        // 添加退出登录提示
+        function showLogoutSuccess() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon" style="background: #718096;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                </div>
+                <div class="success-title">已退出登录</div>
+                <div class="success-message">期待您的再次访问</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 2000);
+        }
+        
+        // 添加登录按钮点击事件
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                // 如果已登录，则执行退出操作
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('adminName');
+                checkLoginStatus();
+                showLogoutSuccess();
+            } else {
+                // 如果未登录，则显示登录框
+                const username = prompt('请输入管理员账号：');
+                if (username === null) return;
+                
+                const password = prompt('请输入密码：');
+                if (password === null) return;
+                
+                if (username === 'Hayden' && password === 'Hayden0320') {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('adminName', 'Hayden');
+                    checkLoginStatus();
+                    showLoginSuccess();
+                } else if (password !== null) {
+                    showLoginError();
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

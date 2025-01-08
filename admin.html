@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>预约管理系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            min-height: 100vh;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 1.75rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            border-radius: 2px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .filter-group select:focus, .filter-group input:focus {
+            outline: none;
+            border-color: #84fab0;
+            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.15);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        tr:hover {
+            background: #f7fafc;
+        }
+
+        .status-pending {
+            color: #d69e2e;
+            background: #fef3c7;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .status-confirmed {
+            color: #2f855a;
+            background: #def7ec;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .status-cancelled {
+            color: #c53030;
+            background: #fed7d7;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .btn-confirm {
+            background: #84fab0;
+            color: #2f855a;
+        }
+
+        .btn-cancel {
+            background: #fed7d7;
+            color: #c53030;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h2>预约管理系统</h2>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label for="date-filter">日期筛选</label>
+                <input type="date" id="date-filter">
+            </div>
+            <div class="filter-group">
+                <label for="department-filter">科室筛选</label>
+                <select id="department-filter">
+                    <option value="">全部科室</option>
+                    <option value="内科">内科</option>
+                    <option value="外科">外科</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="status-filter">状态筛选</label>
+                <select id="status-filter">
+                    <option value="">全部状态</option>
+                    <option value="pending">待确认</option>
+                    <option value="confirmed">已确认</option>
+                    <option value="cancelled">已取消</option>
+                </select>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>预约日期</th>
+                    <th>预约时间</th>
+                    <th>患者姓名</th>
+                    <th>联系电话</th>
+                    <th>就诊科室</th>
+                    <th>身份证号</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2024-03-20</td>
+                    <td>09:30</td>
+                    <td>张三</td>
+                    <td>0123456789</td>
+                    <td>内科</td>
+                    <td>123456789</td>
+                    <td><span class="status-pending">待确认</span></td>
+                    <td class="actions">
+                        <button class="btn btn-confirm">确认</button>
+                        <button class="btn btn-cancel">取消</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2024-03-20</td>
+                    <td>10:00</td>
+                    <td>李四</td>
+                    <td>0187654321</td>
+                    <td>外科</td>
+                    <td>987654321</td>
+                    <td><span class="status-confirmed">已确认</span></td>
+                    <td class="actions">
+                        <button class="btn btn-cancel">取消</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 筛选功能
+        const dateFilter = document.getElementById('date-filter');
+        const departmentFilter = document.getElementById('department-filter');
+        const statusFilter = document.getElementById('status-filter');
+
+        function applyFilters() {
+            const date = dateFilter.value;
+            const department = departmentFilter.value;
+            const status = statusFilter.value;
+            
+            // 这里添加筛选逻辑
+            console.log('应用筛选:', { date, department, status });
+        }
+
+        // 添加筛选事件监听
+        [dateFilter, departmentFilter, statusFilter].forEach(filter => {
+            filter.addEventListener('change', applyFilters);
+        });
+
+        // 处理确认和取消按钮
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const name = row.querySelector('td:nth-child(3)').textContent;
+                const action = this.classList.contains('btn-confirm') ? '确认' : '取消';
+                
+                if (confirm(`确定要${action}${name}的预约吗？`)) {
+                    // 这里添加确认/取消预约的逻辑
+                    console.log(`${action}预约:`, name);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
