@@ -445,6 +445,25 @@
             opacity: 0.8;
         }
     </style>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrsrBuGb8lMq74KBVh_TeTI2jLIkbWArI",
+            authDomain: "drhee-d5eb1.firebaseapp.com",
+            projectId: "drhee-d5eb1",
+            storageBucket: "drhee-d5eb1.firebasestorage.app",
+            messagingSenderId: "859425424440",
+            appId: "1:859425424440:web:813bf5768a21a1b5f012cd",
+            measurementId: "G-W20SSBNDKY",
+            databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app" // 添加数据库URL
+        };
+        
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
 </head>
 <body>
     <button class="login-btn" id="loginBtn">登录</button>
@@ -649,9 +668,6 @@
             
             // 如果验证通过，保存预约信息
             if (errorMessages.length === 0) {
-                // 获取当前预约列表
-                let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-                
                 // 创建新的预约记录
                 const newAppointment = {
                     id: Date.now(), // 使用时间戳作为唯一ID
@@ -664,11 +680,8 @@
                     status: 'pending' // 初始状态为待确认
                 };
                 
-                // 添加到预约列表
-                appointments.push(newAppointment);
-                
-                // 保存到 localStorage
-                localStorage.setItem('appointments', JSON.stringify(appointments));
+                // 保存到 Firebase
+                database.ref('appointments').push(newAppointment);
             }
 
             // 如果验证通过，显示成功消息

@@ -240,31 +240,54 @@
         </table>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrsrBuGb8lMq74KBVh_TeTI2jLIkbWArI",
+            authDomain: "drhee-d5eb1.firebaseapp.com",
+            projectId: "drhee-d5eb1",
+            storageBucket: "drhee-d5eb1.firebasestorage.app",
+            messagingSenderId: "859425424440",
+            appId: "1:859425424440:web:813bf5768a21a1b5f012cd",
+            measurementId: "G-W20SSBNDKY",
+            databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app"
+        };
+        
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
     <script>
         // 加载预约数据
         function loadAppointments() {
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = ''; // 清空现有内容
-            
-            appointments.forEach(appointment => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${appointment.date}</td>
-                    <td>${appointment.time}</td>
-                    <td>${appointment.name}</td>
-                    <td>${appointment.phone}</td>
-                    <td>${appointment.department}</td>
-                    <td>${appointment.idCard}</td>
-                    <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
-                    <td class="actions">
-                        ${appointment.status === 'pending' ? 
-                            `<button class="btn btn-confirm" onclick="updateStatus(${appointment.id}, 'confirmed')">确认</button>` : ''}
-                        ${appointment.status !== 'cancelled' ? 
-                            `<button class="btn btn-cancel" onclick="updateStatus(${appointment.id}, 'cancelled')">取消</button>` : ''}
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            database.ref('appointments').on('value', snapshot => {
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = ''; // 清空现有内容
+                
+                snapshot.forEach(childSnapshot => {
+                    const appointment = childSnapshot.val();
+                    const appointmentId = childSnapshot.key;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${appointment.date}</td>
+                        <td>${appointment.time}</td>
+                        <td>${appointment.name}</td>
+                        <td>${appointment.phone}</td>
+                        <td>${appointment.department}</td>
+                        <td>${appointment.idCard}</td>
+                        <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
+                        <td class="actions">
+                            ${appointment.status === 'pending' ? 
+                                `<button class="btn btn-confirm" onclick="updateStatus('${appointmentId}', 'confirmed')">确认</button>` : ''}
+                            ${appointment.status !== 'cancelled' ? 
+                                `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             });
         }
         
@@ -280,14 +303,9 @@
         
         // 更新预约状态
         function updateStatus(id, newStatus) {
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            const appointment = appointments.find(a => a.id === id);
-            
-            if (appointment) {
-                appointment.status = newStatus;
-                localStorage.setItem('appointments', JSON.stringify(appointments));
-                loadAppointments(); // 重新加载列表
-            }
+            database.ref(`appointments/${id}`).update({
+                status: newStatus
+            });
         }
         
         // 筛选功能
@@ -300,35 +318,37 @@
             const department = departmentFilter.value;
             const status = statusFilter.value;
             
-            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
-            const filtered = appointments.filter(appointment => {
-                if (date && appointment.date !== date) return false;
-                if (department && appointment.department !== department) return false;
-                if (status && appointment.status !== status) return false;
-                return true;
-            });
-            
-            const tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
-            
-            filtered.forEach(appointment => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${appointment.date}</td>
-                    <td>${appointment.time}</td>
-                    <td>${appointment.name}</td>
-                    <td>${appointment.phone}</td>
-                    <td>${appointment.department}</td>
-                    <td>${appointment.idCard}</td>
-                    <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
-                    <td class="actions">
-                        ${appointment.status === 'pending' ? 
-                            `<button class="btn btn-confirm" onclick="updateStatus(${appointment.id}, 'confirmed')">确认</button>` : ''}
-                        ${appointment.status !== 'cancelled' ? 
-                            `<button class="btn btn-cancel" onclick="updateStatus(${appointment.id}, 'cancelled')">取消</button>` : ''}
-                    </td>
-                `;
-                tbody.appendChild(tr);
+            database.ref('appointments').orderByChild('date').on('value', snapshot => {
+                const tbody = document.querySelector('tbody');
+                tbody.innerHTML = '';
+                
+                snapshot.forEach(childSnapshot => {
+                    const appointment = childSnapshot.val();
+                    const appointmentId = childSnapshot.key;
+                    
+                    // 应用筛选
+                    if (date && appointment.date !== date) return;
+                    if (department && appointment.department !== department) return;
+                    if (status && appointment.status !== status) return;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${appointment.date}</td>
+                        <td>${appointment.time}</td>
+                        <td>${appointment.name}</td>
+                        <td>${appointment.phone}</td>
+                        <td>${appointment.department}</td>
+                        <td>${appointment.idCard}</td>
+                        <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
+                        <td class="actions">
+                            ${appointment.status === 'pending' ? 
+                                `<button class="btn btn-confirm" onclick="updateStatus('${appointmentId}', 'confirmed')">确认</button>` : ''}
+                            ${appointment.status !== 'cancelled' ? 
+                                `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
             });
         }
 
