@@ -386,10 +386,10 @@
             opacity: 0.5;
         }
         
-        /* 添加管理按钮样式 */
+        /* 修改管理按钮样式 */
         .admin-link {
             position: fixed;
-            top: 20px;
+            top: 5px;
             right: 80px;
             padding: 10px 20px;
             background: rgba(255, 255, 255, 0.9);
@@ -401,6 +401,9 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             display: none; /* 默认隐藏 */
+            height: 35px;
+            line-height: 15px;
+            padding: 10px 15px;
         }
         
         .admin-link:hover {
@@ -644,6 +647,30 @@
                 return;
             }
             
+            // 如果验证通过，保存预约信息
+            if (errorMessages.length === 0) {
+                // 获取当前预约列表
+                let appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+                
+                // 创建新的预约记录
+                const newAppointment = {
+                    id: Date.now(), // 使用时间戳作为唯一ID
+                    date: form.appointmentDate.value,
+                    time: form.time.value,
+                    name: form.name.value,
+                    phone: form.phone.value,
+                    department: form.department.value,
+                    idCard: form.idCard.value,
+                    status: 'pending' // 初始状态为待确认
+                };
+                
+                // 添加到预约列表
+                appointments.push(newAppointment);
+                
+                // 保存到 localStorage
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+            }
+
             // 如果验证通过，显示成功消息
             showSuccessAlert();
             form.reset();

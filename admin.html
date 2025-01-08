@@ -241,6 +241,55 @@
     </div>
 
     <script>
+        // 加载预约数据
+        function loadAppointments() {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = ''; // 清空现有内容
+            
+            appointments.forEach(appointment => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${appointment.date}</td>
+                    <td>${appointment.time}</td>
+                    <td>${appointment.name}</td>
+                    <td>${appointment.phone}</td>
+                    <td>${appointment.department}</td>
+                    <td>${appointment.idCard}</td>
+                    <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
+                    <td class="actions">
+                        ${appointment.status === 'pending' ? 
+                            `<button class="btn btn-confirm" onclick="updateStatus(${appointment.id}, 'confirmed')">确认</button>` : ''}
+                        ${appointment.status !== 'cancelled' ? 
+                            `<button class="btn btn-cancel" onclick="updateStatus(${appointment.id}, 'cancelled')">取消</button>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        
+        // 获取状态文本
+        function getStatusText(status) {
+            const statusMap = {
+                pending: '待确认',
+                confirmed: '已确认',
+                cancelled: '已取消'
+            };
+            return statusMap[status] || status;
+        }
+        
+        // 更新预约状态
+        function updateStatus(id, newStatus) {
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const appointment = appointments.find(a => a.id === id);
+            
+            if (appointment) {
+                appointment.status = newStatus;
+                localStorage.setItem('appointments', JSON.stringify(appointments));
+                loadAppointments(); // 重新加载列表
+            }
+        }
+        
         // 筛选功能
         const dateFilter = document.getElementById('date-filter');
         const departmentFilter = document.getElementById('department-filter');
@@ -251,8 +300,36 @@
             const department = departmentFilter.value;
             const status = statusFilter.value;
             
-            // 这里添加筛选逻辑
-            console.log('应用筛选:', { date, department, status });
+            const appointments = JSON.parse(localStorage.getItem('appointments') || '[]');
+            const filtered = appointments.filter(appointment => {
+                if (date && appointment.date !== date) return false;
+                if (department && appointment.department !== department) return false;
+                if (status && appointment.status !== status) return false;
+                return true;
+            });
+            
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            filtered.forEach(appointment => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${appointment.date}</td>
+                    <td>${appointment.time}</td>
+                    <td>${appointment.name}</td>
+                    <td>${appointment.phone}</td>
+                    <td>${appointment.department}</td>
+                    <td>${appointment.idCard}</td>
+                    <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
+                    <td class="actions">
+                        ${appointment.status === 'pending' ? 
+                            `<button class="btn btn-confirm" onclick="updateStatus(${appointment.id}, 'confirmed')">确认</button>` : ''}
+                        ${appointment.status !== 'cancelled' ? 
+                            `<button class="btn btn-cancel" onclick="updateStatus(${appointment.id}, 'cancelled')">取消</button>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         // 添加筛选事件监听
@@ -260,19 +337,8 @@
             filter.addEventListener('change', applyFilters);
         });
 
-        // 处理确认和取消按钮
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                const name = row.querySelector('td:nth-child(3)').textContent;
-                const action = this.classList.contains('btn-confirm') ? '确认' : '取消';
-                
-                if (confirm(`确定要${action}${name}的预约吗？`)) {
-                    // 这里添加确认/取消预约的逻辑
-                    console.log(`${action}预约:`, name);
-                }
-            });
-        });
+        // 页面加载时显示预约列表
+        loadAppointments();
     </script>
 </body>
 </html> 
