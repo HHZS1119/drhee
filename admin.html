@@ -167,6 +167,19 @@
                 overflow-x: auto;
             }
         }
+
+        .btn-complete {
+            background: #90cdf4;
+            color: #2b6cb0;
+        }
+
+        .status-completed {
+            color: #2b6cb0;
+            background: #ebf8ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 <body>
@@ -192,6 +205,7 @@
                     <option value="">全部状态</option>
                     <option value="pending">待确认</option>
                     <option value="confirmed">已确认</option>
+                    <option value="completed">已完成</option>
                     <option value="cancelled">已取消</option>
                 </select>
             </div>
@@ -282,7 +296,9 @@
                         <td class="actions">
                             ${appointment.status === 'pending' ? 
                                 `<button class="btn btn-confirm" onclick="updateStatus('${appointmentId}', 'confirmed')">确认</button>` : ''}
-                            ${appointment.status !== 'cancelled' ? 
+                            ${appointment.status === 'confirmed' ? 
+                                `<button class="btn btn-complete" onclick="updateStatus('${appointmentId}', 'completed')">已完成</button>` : ''}
+                            ${appointment.status !== 'cancelled' && appointment.status !== 'completed' ? 
                                 `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
                         </td>
                     `;
@@ -296,7 +312,8 @@
             const statusMap = {
                 pending: '待确认',
                 confirmed: '已确认',
-                cancelled: '已取消'
+                cancelled: '已取消',
+                completed: '已完成'
             };
             return statusMap[status] || status;
         }
@@ -343,7 +360,9 @@
                         <td class="actions">
                             ${appointment.status === 'pending' ? 
                                 `<button class="btn btn-confirm" onclick="updateStatus('${appointmentId}', 'confirmed')">确认</button>` : ''}
-                            ${appointment.status !== 'cancelled' ? 
+                            ${appointment.status === 'confirmed' ? 
+                                `<button class="btn btn-complete" onclick="updateStatus('${appointmentId}', 'completed')">已完成</button>` : ''}
+                            ${appointment.status !== 'cancelled' && appointment.status !== 'completed' ? 
                                 `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
                         </td>
                     `;
