@@ -1012,6 +1012,9 @@
             const successDiv = document.createElement('div');
             successDiv.className = 'success-alert';
             
+            const adminName = localStorage.getItem('adminName');
+            const roleText = adminName === 'Howard' ? '网站拥有者' : '管理员';
+            
             successDiv.innerHTML = `
                 <div class="success-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1019,7 +1022,7 @@
                     </svg>
                 </div>
                 <div class="success-title">登录成功</div>
-                <div class="success-message">欢迎回来，管理员 Hayden</div>
+                <div class="success-message">欢迎回来，${roleText} ${adminName}</div>
             `;
             
             document.body.appendChild(successDiv);
@@ -1120,9 +1123,10 @@
                     const username = usernameInput.value.trim();
                     const password = passwordInput.value.trim();
                     
-                    if (username === 'Hayden' && password === 'Hayden0320') {
+                    if ((username === 'Hayden' && password === 'Hayden0320') || 
+                        (username === 'Howard' && password === 'Howard2009')) {
                         localStorage.setItem('isLoggedIn', 'true');
-                        localStorage.setItem('adminName', 'Hayden');
+                        localStorage.setItem('adminName', username);
                         modal.remove();
                         checkLoginStatus();
                         showLoginSuccess();
