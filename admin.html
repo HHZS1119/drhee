@@ -180,12 +180,31 @@
             border-radius: 4px;
             font-size: 0.875rem;
         }
+
+        .btn-delete {
+            background: #f56565;
+            color: white;
+            margin-left: 8px;
+        }
+
+        .btn-delete:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
     <div class="admin-container">
         <h2>预约管理系统</h2>
         
+        <div style="text-align: right; margin-bottom: 20px;">
+            <a href="followup.html" class="btn" style="background: #84fab0; color: #2f855a; text-decoration: none; margin-right: 10px;">
+                复诊时间管理
+            </a>
+            <button class="btn btn-cancel" onclick="clearAllAppointments()" style="padding: 10px 20px;">
+                清除所有记录
+            </button>
+        </div>
+
         <div class="filters">
             <div class="filter-group">
                 <label for="date-filter">日期筛选</label>
@@ -197,6 +216,11 @@
                     <option value="">全部科室</option>
                     <option value="内科">内科</option>
                     <option value="外科">外科</option>
+                    <option value="妇产科">妇产科</option>
+                    <option value="脑科">脑科</option>
+                    <option value="骨科">骨科</option>
+                    <option value="心脏科">心脏科</option>
+                    <option value="精神科">精神科</option>
                 </select>
             </div>
             <div class="filter-group">
@@ -228,10 +252,12 @@
                 <tr>
                     <td>2024-03-20</td>
                     <td>09:30</td>
-                    <td>张三</td>
-                    <td>0123456789</td>
-                    <td>内科</td>
-                    <td>123456789</td>
+                    <td>${appointment.isEmergency ? 
+                        `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
+                        appointment.name}</td>
+                    <td>${appointment.phone}</td>
+                    <td>${appointment.department}</td>
+                    <td>${appointment.idCard}</td>
                     <td><span class="status-pending">待确认</span></td>
                     <td class="actions">
                         <button class="btn btn-confirm">确认</button>
@@ -252,6 +278,15 @@
                 </tr>
             </tbody>
         </table>
+    </div>
+
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="index.html" onclick="saveLoginState()">返回首页</a>
+        </div>
+        <div class="navbar-right">
+            <a href="#" onclick="handleLoginLogout()" id="loginLogoutBtn">退出</a>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -288,7 +323,9 @@
                     tr.innerHTML = `
                         <td>${appointment.date}</td>
                         <td>${appointment.time}</td>
-                        <td>${appointment.name}</td>
+                        <td>${appointment.isEmergency ? 
+                            `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
+                            appointment.name}</td>
                         <td>${appointment.phone}</td>
                         <td>${appointment.department}</td>
                         <td>${appointment.idCard}</td>
@@ -300,6 +337,7 @@
                                 `<button class="btn btn-complete" onclick="updateStatus('${appointmentId}', 'completed')">已完成</button>` : ''}
                             ${appointment.status !== 'cancelled' && appointment.status !== 'completed' ? 
                                 `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
+                            <button class="btn btn-delete" onclick="deleteAppointment('${appointmentId}')" style="background: #f56565; color: white;">删除</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -320,9 +358,198 @@
         
         // 更新预约状态
         function updateStatus(id, newStatus) {
-            database.ref(`appointments/${id}`).update({
-                status: newStatus
-            });
+            if (newStatus === 'completed') {
+                // 创建确认对话框
+                const confirmModal = document.createElement('div');
+                confirmModal.className = 'confirm-modal';
+                confirmModal.innerHTML = `
+                    <div class="confirm-content">
+                        <div class="confirm-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <div class="confirm-title">确认完成预约？</div>
+                        <div class="confirm-message">请确认该预约已经完成就诊</div>
+                        <div class="confirm-buttons">
+                            <button class="confirm-yes">确认完成</button>
+                            <button class="confirm-no">取消</button>
+                        </div>
+                    </div>
+                `;
+                
+                // 添加样式
+                const style = document.createElement('style');
+                style.textContent = `
+                    .confirm-modal {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.5);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 1000;
+                        animation: fadeIn 0.3s ease;
+                    }
+                    
+                    .confirm-content {
+                        background: white;
+                        padding: 30px;
+                        border-radius: 12px;
+                        text-align: center;
+                        max-width: 400px;
+                        width: 90%;
+                        animation: slideIn 0.3s ease;
+                    }
+                    
+                    .confirm-icon {
+                        width: 60px;
+                        height: 60px;
+                        background: #90cdf4;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin: 0 auto 20px;
+                    }
+                    
+                    .confirm-icon svg {
+                        width: 30px;
+                        height: 30px;
+                        stroke: white;
+                    }
+                    
+                    .confirm-title {
+                        font-size: 1.25rem;
+                        font-weight: 600;
+                        color: #2d3748;
+                        margin-bottom: 10px;
+                    }
+                    
+                    .confirm-message {
+                        color: #718096;
+                        margin-bottom: 20px;
+                    }
+                    
+                    .confirm-buttons {
+                        display: flex;
+                        gap: 10px;
+                        justify-content: center;
+                    }
+                    
+                    .confirm-yes {
+                        background: #90cdf4;
+                        color: white;
+                        padding: 8px 20px;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-weight: 500;
+                        transition: all 0.3s;
+                    }
+                    
+                    .confirm-no {
+                        background: #e2e8f0;
+                        color: #4a5568;
+                        padding: 8px 20px;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-weight: 500;
+                        transition: all 0.3s;
+                    }
+                    
+                    .confirm-yes:hover, .confirm-no:hover {
+                        transform: translateY(-1px);
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    }
+                    
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    
+                    @keyframes slideIn {
+                        from {
+                            transform: translateY(-20px);
+                            opacity: 0;
+                        }
+                        to {
+                            transform: translateY(0);
+                            opacity: 1;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // 添加到页面
+                document.body.appendChild(confirmModal);
+                
+                // 添加事件监听
+                const yesBtn = confirmModal.querySelector('.confirm-yes');
+                const noBtn = confirmModal.querySelector('.confirm-no');
+                
+                yesBtn.addEventListener('click', () => {
+                    // 更新状态
+                    database.ref(`appointments/${id}`).update({
+                        status: newStatus
+                    }).then(() => {
+                        // 显示成功提示
+                        showStatusUpdateSuccess('已完成');
+                    });
+                    confirmModal.remove();
+                });
+                
+                noBtn.addEventListener('click', () => {
+                    confirmModal.remove();
+                });
+                
+                // 点击背景关闭
+                confirmModal.addEventListener('click', (e) => {
+                    if (e.target === confirmModal) {
+                        confirmModal.remove();
+                    }
+                });
+            } else {
+                // 直接更新其他状态
+                database.ref(`appointments/${id}`).update({
+                    status: newStatus
+                });
+            }
+        }
+
+        // 添加状态更新成功提示
+        function showStatusUpdateSuccess(status) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon" style="background: #90cdf4;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
+                <div class="success-title">状态已更新</div>
+                <div class="success-message">预约已标记为${status}</div>
+            `;
+            
+            // 移除已存在的提示框
+            const existingAlert = document.querySelector('.success-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 2000);
         }
         
         // 筛选功能
@@ -352,7 +579,9 @@
                     tr.innerHTML = `
                         <td>${appointment.date}</td>
                         <td>${appointment.time}</td>
-                        <td>${appointment.name}</td>
+                        <td>${appointment.isEmergency ? 
+                            `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
+                            appointment.name}</td>
                         <td>${appointment.phone}</td>
                         <td>${appointment.department}</td>
                         <td>${appointment.idCard}</td>
@@ -364,6 +593,7 @@
                                 `<button class="btn btn-complete" onclick="updateStatus('${appointmentId}', 'completed')">已完成</button>` : ''}
                             ${appointment.status !== 'cancelled' && appointment.status !== 'completed' ? 
                                 `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
+                            <button class="btn btn-delete" onclick="deleteAppointment('${appointmentId}')" style="background: #f56565; color: white;">删除</button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -378,6 +608,360 @@
 
         // 页面加载时显示预约列表
         loadAppointments();
+
+        // 修改权限检查函数
+        function checkPermission() {
+            const adminName = localStorage.getItem('adminName');
+            const filtersDiv = document.querySelector('.filters');
+            const controlsDiv = document.createElement('div');
+            controlsDiv.style.cssText = `
+                text-align: right;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+            `;
+            
+            // 添加营业状态切换按钮（所有管理员都可以使用）
+            const statusButton = document.createElement('button');
+            statusButton.className = 'btn btn-status';
+            
+            // 从 Firebase 获取当前营业状态
+            database.ref('hospitalStatus').on('value', snapshot => {
+                const isOpen = snapshot.val()?.isOpen ?? true;
+                updateStatusButton(statusButton, isOpen);
+            });
+            
+            statusButton.onclick = function() {
+                toggleHospitalStatus(statusButton);
+            };
+            
+            controlsDiv.appendChild(statusButton);
+            document.querySelector('.admin-container').insertBefore(
+                controlsDiv,
+                document.querySelector('.filters')
+            );
+            
+            // 普通管理员只能查看和处理预约，不能清除所有记录
+            if (adminName === 'Hayden') {
+                const clearButton = document.querySelector('.btn-cancel[onclick="clearAllAppointments()"]');
+                if (clearButton) {
+                    clearButton.style.display = 'none';
+                }
+            }
+        }
+        
+        // 修改更新状态按钮的函数
+        function updateStatusButton(button, isOpen) {
+            button.innerHTML = isOpen ? '🟢 医院营业中' : '🔴 医院已关闭';
+            button.style.cssText = `
+                background: ${isOpen ? '#84fab0' : '#f56565'};
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            `;
+        }
+        
+        // 修改切换营业状态的函数
+        function toggleHospitalStatus(button) {
+            database.ref('hospitalStatus').once('value', snapshot => {
+                const currentStatus = snapshot.val()?.isOpen ?? true;
+                const newStatus = !currentStatus;
+                
+                database.ref('hospitalStatus').set({
+                    isOpen: newStatus,
+                    lastUpdated: new Date().toISOString()
+                }).then(() => {
+                    updateStatusButton(button, newStatus);
+                    showStatusChangeSuccess(newStatus);
+                }).catch(error => {
+                    console.error('Error updating status:', error);
+                    alert('更新状态失败，请重试');
+                });
+            });
+        }
+        
+        // 添加状态更改成功提示
+        function showStatusChangeSuccess(isOpen) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon" style="background: ${isOpen ? '#84fab0' : '#f56565'};">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <div class="success-title">状态已更新</div>
+                <div class="success-message">医院现在${isOpen ? '营业中' : '已关闭'}</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 2000);
+        }
+        
+        // 修改删除单条记录的函数
+        function deleteAppointment(appointmentId) {
+            // 创建确认对话框
+            const confirmModal = document.createElement('div');
+            confirmModal.className = 'confirm-modal';
+            confirmModal.innerHTML = `
+                <div class="confirm-content" style="animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
+                    <div class="confirm-icon" style="background: #f56565; animation: pulseIcon 1s ease infinite;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                    </div>
+                    <div class="confirm-title" style="color: #f56565;">确认删除预约？</div>
+                    <div class="confirm-message">此操作不可恢复，请确认是否删除该预约记录</div>
+                    <div class="confirm-buttons">
+                        <button class="confirm-yes" style="background: #f56565; animation: shake 0.5s ease-in-out;">确认删除</button>
+                        <button class="confirm-no">取消</button>
+                    </div>
+                </div>
+            `;
+            
+            // 添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .confirm-modal {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.7);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    animation: fadeIn 0.3s ease;
+                    backdrop-filter: blur(4px);
+                }
+                
+                .confirm-content {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 16px;
+                    text-align: center;
+                    max-width: 400px;
+                    width: 90%;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                }
+                
+                .confirm-icon {
+                    width: 70px;
+                    height: 70px;
+                    background: #f56565;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 20px;
+                    box-shadow: 0 0 0 rgba(245, 101, 101, 0.4);
+                }
+                
+                .confirm-icon svg {
+                    width: 35px;
+                    height: 35px;
+                    stroke: white;
+                }
+                
+                .confirm-title {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    margin-bottom: 12px;
+                }
+                
+                .confirm-message {
+                    color: #718096;
+                    margin-bottom: 25px;
+                    line-height: 1.5;
+                }
+                
+                .confirm-buttons {
+                    display: flex;
+                    gap: 12px;
+                    justify-content: center;
+                }
+                
+                .confirm-yes, .confirm-no {
+                    padding: 10px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    font-size: 1rem;
+                    transition: all 0.3s ease;
+                }
+                
+                .confirm-yes {
+                    background: #f56565;
+                    color: white;
+                }
+                
+                .confirm-no {
+                    background: #e2e8f0;
+                    color: #4a5568;
+                }
+                
+                .confirm-yes:hover, .confirm-no:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                }
+                
+                @keyframes bounceIn {
+                    0% {
+                        transform: scale(0.3);
+                        opacity: 0;
+                    }
+                    50% {
+                        transform: scale(1.05);
+                    }
+                    70% {
+                        transform: scale(0.9);
+                    }
+                    100% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+                
+                @keyframes pulseIcon {
+                    0% {
+                        box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.4);
+                    }
+                    70% {
+                        box-shadow: 0 0 0 15px rgba(245, 101, 101, 0);
+                    }
+                    100% {
+                        box-shadow: 0 0 0 0 rgba(245, 101, 101, 0);
+                    }
+                }
+                
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-5px); }
+                    75% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 添加到页面
+            document.body.appendChild(confirmModal);
+            
+            // 添加事件监听
+            const yesBtn = confirmModal.querySelector('.confirm-yes');
+            const noBtn = confirmModal.querySelector('.confirm-no');
+            
+            yesBtn.addEventListener('click', () => {
+                // 删除记录
+                database.ref(`appointments/${appointmentId}`).remove()
+                    .then(() => {
+                        showDeleteSuccess();
+                    })
+                    .catch(error => {
+                        alert('删除失败：' + error.message);
+                    });
+                confirmModal.remove();
+            });
+            
+            noBtn.addEventListener('click', () => {
+                confirmModal.remove();
+            });
+            
+            // 点击背景关闭
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) {
+                    confirmModal.remove();
+                }
+            });
+            
+            // 按ESC关闭
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    confirmModal.remove();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+        }
+        
+        // 添加删除成功提示
+        function showDeleteSuccess() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon" style="background: #f56565;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                </div>
+                <div class="success-title">删除成功</div>
+                <div class="success-message">预约记录已删除</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 2000);
+        }
+        
+        // 页面加载时检查权限
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                window.location.href = 'index.html';
+                return;
+            }
+            checkPermission();
+        });
+
+        // 保存登录状态的函数
+        function saveLoginState() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const adminName = localStorage.getItem('adminName');
+            
+            if (isLoggedIn && adminName) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('adminName', adminName);
+            }
+        }
+
+        // 检查登录状态并重定向
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const adminName = localStorage.getItem('adminName');
+            
+            if (!isLoggedIn || !adminName) {
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const loginLogoutBtn = document.getElementById('loginLogoutBtn');
+            if (loginLogoutBtn) {
+                loginLogoutBtn.textContent = '退出';
+            }
+        }
+
+        // 页面加载时检查登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
     </script>
 </body>
 </html> 

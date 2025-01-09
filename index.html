@@ -5,371 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>医院预约系统</title>
     <style>
+        /* 全局样式 */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 0;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
             min-height: 100vh;
+            color: #2d3748;
         }
         
+        /* 导航栏样式优化 */
         .navbar {
             background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 1rem 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar:hover {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .navbar-left, .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
         
         .navbar a {
             color: #2d3748;
             text-decoration: none;
-            margin-right: 20px;
             font-weight: 500;
-            transition: opacity 0.3s;
-            font-size: 1.1rem;
-        }
-        
-        .navbar a:hover {
-            opacity: 0.8;
-        }
-        
-        .appointment-container {
-            max-width: 600px;
-            margin: 40px auto 40px auto;
-            padding: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-        }
-        
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #2d3748;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-        }
-        
-        input, select {
-            width: 100%;
-            padding: 10px 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            box-sizing: border-box;
             transition: all 0.3s;
-            font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: #84fab0;
-            box-shadow: 0 0 0 4px rgba(132, 250, 176, 0.15);
-        }
-        
-        button {
-            background: linear-gradient(45deg, #84fab0, #8fd3f4);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
             position: relative;
             overflow: hidden;
         }
         
-        button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1),
-                        0 3px 6px rgba(0, 0, 0, 0.08);
-        }
-        
-        button:active {
-            transform: translateY(1px);
-        }
-        
-        h2 {
-            text-align: center;
-            color: #2d3748;
-            margin-bottom: 40px;
-            font-size: 1.75rem;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 15px;
-        }
-        
-        h2::after {
+        .navbar a::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 4px;
-            background: linear-gradient(45deg, #84fab0, #8fd3f4);
-            border-radius: 2px;
-        }
-        
-        input::placeholder {
-            color: #a0aec0;
-        }
-        
-        select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232d3748' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 20px;
-            padding-right: 40px;
-        }
-        
-        @media (max-width: 640px) {
-            .appointment-container {
-                margin: 20px auto;
-                padding: 20px;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-                margin-bottom: 25px;
-            }
-            
-            body {
-                padding: 10px;
-            }
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .appointment-container {
-            animation: fadeIn 0.6s ease-out;
-        }
-        
-        /* 添加禁用状态的按钮样式 */
-        button:disabled {
-            background: #cbd5e0;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        
-        /* 添加错误提示样式 */
-        .error-message {
-            color: #e53e3e;
-            font-size: 0.875rem;
-            margin-top: 5px;
-            display: block;
-            opacity: 0;
-            height: 0;
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-        
-        .error-message.show {
-            opacity: 1;
-            height: 20px;
-            margin-top: 5px;
-        }
-        
-        input:invalid:not(:placeholder-shown):not([type="time"]):not([type="date"]):not(:focus),
-        select:invalid:not(:focus):not(:first-of-type) {
-            border-color: #e53e3e;
-        }
-        
-        /* 添加初始状态的边框颜色 */
-        input, select {
-            border: 2px solid #e2e8f0;
-        }
-        
-        /* 添加输入框的占位符 */
-        input[type="text"],
-        input[type="tel"] {
-            placeholder: " ";
-        }
-        
-        /* 添加抖动动画 */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0) rotate(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px) rotate(-2deg); }
-            20%, 40%, 60%, 80% { transform: translateX(8px) rotate(2deg); }
-        }
-        
-        /* 添加淡入动画 */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* 添加提示框动画 */
-        @keyframes slideIn {
-            0% { 
-                transform: translateY(-100%) translateX(-50%);
-                opacity: 0;
-            }
-            100% { 
-                transform: translateY(0) translateX(-50%);
-                opacity: 1;
-            }
-        }
-        
-        .shake {
-            animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both !important;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
-            perspective: 1000px;
-        }
-        
-        /* 自定义提示框样式 */
-        .custom-alert {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            animation: slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            min-width: 300px;
-            transform-origin: top center;
-        }
-        
-        .custom-alert ul {
-            margin: 10px 0;
-            padding-left: 20px;
-            color: #e53e3e;
-        }
-        
-        .custom-alert h3 {
-            margin: 0 0 10px 0;
-            color: #2d3748;
-        }
-        
-        /* 添加成功提示框动画和样式 */
-        @keyframes successIn {
-            0% { 
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
-            50% { 
-                transform: translate(-50%, 10%);
-            }
-            100% { 
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes checkmark {
-            0% { 
-                transform: scale(0);
-            }
-            50% { 
-                transform: scale(1.2);
-            }
-            100% { 
-                transform: scale(1);
-            }
-        }
-        
-        .success-alert {
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.98);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            text-align: center;
-            animation: successIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            min-width: 300px;
-        }
-        
-        .success-icon {
-            width: 60px;
-            height: 60px;
+            width: 0;
+            height: 2px;
             background: #84fab0;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            animation: checkmark 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.4s both;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
         }
         
-        .success-icon svg {
-            width: 30px;
-            height: 30px;
+        .navbar a:hover::after {
+            width: 80%;
+        }
+        
+        .navbar a:hover {
+            color: #2f855a;
+            transform: translateY(-2px);
+        }
+        
+        .navbar a.followup-link {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
             color: white;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .success-title {
-            color: #2d3748;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            font-weight: 600;
+        .navbar a.followup-link:hover {
+            background: linear-gradient(135deg, #68f89e, #7ac8ea);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
-        .success-message {
-            color: #718096;
-            font-size: 1rem;
-            margin-bottom: 20px;
-        }
-        
+        /* 医生标题样式 */
         .doctor-title {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 3rem 0;
+            animation: fadeInUp 1s ease;
         }
         
         .doctor-title h1 {
-            color: #2d3748;
-            font-size: 2.5rem;
+            font-size: 3rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             margin: 0;
-            font-weight: 700;
-            background: linear-gradient(45deg, #84fab0, #8fd3f4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
-            text-transform: uppercase;
             position: relative;
             display: inline-block;
         }
@@ -377,235 +108,375 @@
         .doctor-title h1::after {
             content: '';
             position: absolute;
-            bottom: -8px;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(45deg, #84fab0, #8fd3f4);
-            border-radius: 2px;
-            opacity: 0.5;
-        }
-        
-        /* 修改管理按钮样式 */
-        .admin-link {
-            position: fixed;
-            top: 5px;
-            right: 80px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 6px;
-            text-decoration: none;
-            color: #2d3748;
-            font-weight: 500;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            display: none; /* 默认隐藏 */
-            height: 35px;
-            line-height: 15px;
-            padding: 10px 15px;
-        }
-        
-        .admin-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        }
-        
-        .admin-link.show {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
-        }
-        
-        /* 修改登录按钮样式 */
-        .login-btn {
-            position: absolute;
-            top: 20px;
+            bottom: -10px;
             left: 50%;
-            transform: translateX(-50%) !important;
-            padding: 10px 20px;
-            border: none;
+            width: 60%;
+            height: 3px;
+            background: white;
+            transform: translateX(-50%);
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 预约表单容器样式 */
+        .appointment-container {
+            max-width: 700px;
+            margin: 2rem auto 4rem;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            animation: slideInUp 1s ease;
+        }
+        
+        .appointment-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .appointment-container h2 {
+            text-align: center;
             color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .appointment-container h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        /* 表单组样式 */
+        .form-group {
+            margin-bottom: 1.8rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            color: #2d3748;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group:focus-within label {
+            color: #2f855a;
+            transform: translateX(5px);
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #84fab0;
+            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.2);
+            transform: translateY(-1px);
+        }
+        
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: #84fab0;
+        }
+        
+        /* 提交按钮样式 */
+        .form-group button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: white;
+            font-size: 1.1rem;
             font-weight: 500;
             cursor: pointer;
-            transition: opacity 0.3s ease;
-            font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            width: 80px;
-            text-align: center;
-            height: 35px;
-            line-height: 35px;
-            padding: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .login-btn:hover {
-            opacity: 0.8;
-            transform: translateX(-50%) !important;
+        .form-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #68f89e, #7ac8ea);
         }
         
-        /* 添加紧急预约弹窗样式 */
-        .emergency-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            animation: fadeIn 0.3s ease-out;
+        .form-group button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .emergency-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-            animation: slideIn 0.3s ease-out;
-        }
-        
-        .emergency-title {
+        /* 错误提示样式优化 */
+        .error-message {
             color: #e53e3e;
-            font-size: 24px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: block;
+            opacity: 0;
+            height: 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            padding-left: 0.5rem;
+            border-left: 2px solid #e53e3e;
         }
         
-        .emergency-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e53e3e;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 16px;
+        .error-message.show {
+            opacity: 1;
+            height: auto;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: #fff5f5;
+            border-radius: 4px;
         }
         
-        .emergency-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
+        /* 添加动画 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        .emergency-submit {
-            background: #e53e3e;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        .emergency-cancel {
-            background: #718096;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+            
+            .navbar-left, .navbar-right {
+                gap: 1rem;
+            }
+            
+            .navbar a {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
+            
+            .doctor-title h1 {
+                font-size: 2.5rem;
+            }
+            
+            .appointment-container {
+                margin: 2rem 1rem;
+                padding: 1.5rem;
+            }
         }
         
-        .emergency-submit:hover,
-        .emergency-cancel:hover {
-            opacity: 0.9;
+        @media (max-width: 480px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem 0.5rem;
+            }
+            
+            .doctor-title h1 {
+                font-size: 2rem;
+            }
+            
+            .appointment-container h2 {
+                font-size: 1.5rem;
+            }
         }
         
-        /* 添加登录弹窗样式 */
+        /* 登录模态框样式优化 */
         .login-modal {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 9999;
-            animation: fadeIn 0.3s ease-out;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
         }
         
         .login-content {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 2.5rem;
+            border-radius: 16px;
             width: 90%;
             max-width: 400px;
-            text-align: center;
-            position: relative;
-            animation: slideIn 0.3s ease-out;
+            animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
         }
         
         .login-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
             color: #2d3748;
-            font-size: 24px;
-            margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 0.8rem;
         }
         
         .login-input {
             width: 100%;
-            padding: 12px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
             border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            margin-bottom: 15px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
         
         .login-input:focus {
-            border-color: #84fab0;
             outline: none;
+            border-color: #84fab0;
+            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.2);
+            transform: translateY(-1px);
         }
         
         .login-buttons {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .login-submit, .login-cancel {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
         
         .login-submit {
-            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
             color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
         .login-cancel {
-            background: #718096;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
+            background: #e2e8f0;
+            color: #4a5568;
         }
         
-        .login-submit:hover,
-        .login-cancel:hover {
-            opacity: 0.9;
+        .login-submit:hover, .login-cancel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 成功提示框样式优化 */
+        .success-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            text-align: center;
+            animation: slideDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 300px;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+        
+        /* 后台管理按钮样式 */
+        .admin-link {
+            display: none; /* 默认隐藏 */
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #8fd3f4, #84fab0);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .admin-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #7ac8ea, #68f89e);
+        }
+        
+        .admin-link svg {
+            transition: transform 0.3s ease;
+        }
+        
+        .admin-link:hover svg {
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .admin-link {
+                font-size: 1rem;
+                padding: 0.6rem 1.2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-link {
+                padding: 0.5rem 1rem;
+            }
+            
+            .admin-link svg {
+                width: 16px;
+                height: 16px;
+            }
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -656,24 +527,196 @@
             e.preventDefault();
             return false;
         });
+        
+        // 获取DOM元素和初始化
+        let appointmentForm;
+        let formInputs;
+
+        // DOM加载完成后初始化表单元素
+        document.addEventListener('DOMContentLoaded', function() {
+            appointmentForm = document.querySelector('form');
+            if (appointmentForm) {
+                formInputs = appointmentForm.querySelectorAll('input, select');
+            }
+            
+            // 检查登录状态
+            checkLoginStatus();
+        });
+
+        // 修改检查登录状态函数
+        function checkLoginStatus() {
+            console.log('Checking login status...'); // 调试日志
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const adminName = localStorage.getItem('adminName');
+            console.log('isLoggedIn:', isLoggedIn); // 调试日志
+            console.log('adminName:', adminName); // 调试日志
+            
+            const loginLogoutBtn = document.getElementById('loginLogoutBtn');
+            const adminLink = document.getElementById('adminLink');
+            
+            if (!loginLogoutBtn) {
+                console.log('Login button not found!'); // 调试日志
+                return;
+            }
+            
+            if (isLoggedIn && adminName) {
+                console.log('User is logged in, updating buttons...'); // 调试日志
+                loginLogoutBtn.textContent = '退出';
+                loginLogoutBtn.onclick = handleLoginLogout;
+                if (adminLink) {
+                    adminLink.style.display = 'flex';
+                }
+            } else {
+                console.log('User is not logged in, updating buttons...'); // 调试日志
+                loginLogoutBtn.textContent = '登录';
+                loginLogoutBtn.onclick = handleLoginLogout;
+                if (adminLink) {
+                    adminLink.style.display = 'none';
+                }
+            }
+        }
+
+        // 页面加载时立即检查登录状态
+        window.addEventListener('load', function() {
+            console.log('Page loaded, checking login status...'); // 调试日志
+            checkLoginStatus();
+        });
+
+        // 页面可见性变化时检查
+        document.addEventListener('visibilitychange', function() {
+            console.log('Visibility changed:', !document.hidden); // 调试日志
+            if (!document.hidden) {
+                checkLoginStatus();
+            }
+        });
+
+        // 页面获得焦点时检查
+        window.addEventListener('focus', function() {
+            console.log('Window focused, checking login status...'); // 调试日志
+            checkLoginStatus();
+        });
+
+        // 处理登录/登出逻辑
+        function handleLoginLogout(e) {
+            if (e) e.preventDefault();
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            console.log('Current login status:', isLoggedIn); // 调试日志
+            
+            if (isLoggedIn) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('adminName');
+                checkLoginStatus();
+                showLogoutSuccess();
+            } else {
+                // 创建登录弹窗
+                const modal = document.createElement('div');
+                modal.className = 'login-modal';
+                
+                modal.innerHTML = `
+                    <div class="login-content">
+                        <div class="login-title">
+                            <span>👨‍⚕️</span>
+                            管理员登录
+                        </div>
+                        <input type="text" 
+                               class="login-input" 
+                               placeholder="请输入用户名"
+                               id="username-input">
+                        <input type="password" 
+                               class="login-input" 
+                               placeholder="请输入密码"
+                               id="password-input">
+                        <div class="login-buttons">
+                            <button class="login-submit">登录</button>
+                            <button class="login-cancel">取消</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // 获取元素
+                const usernameInput = modal.querySelector('#username-input');
+                const passwordInput = modal.querySelector('#password-input');
+                const submitBtn = modal.querySelector('.login-submit');
+                const cancelBtn = modal.querySelector('.login-cancel');
+                
+                // 添加事件监听
+                submitBtn.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if ((username === 'Hayden' && password === 'Hayden0320') || 
+                        (username === 'Howard' && password === 'Howard2009')) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('adminName', username);
+                        modal.remove();
+                        checkLoginStatus();
+                        showLoginSuccess();
+                    } else {
+                        showLoginError();
+                        usernameInput.style.borderColor = '#e53e3e';
+                        passwordInput.style.borderColor = '#e53e3e';
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+                
+                // 点击背景关闭
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+                
+                // 按ESC关闭
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                    }
+                });
+                
+                // 自动聚焦用户名输入框
+                usernameInput.focus();
+                
+                // 添加回车键提交功能
+                passwordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitBtn.click();
+                    }
+                });
+            }
+        }
     </script>
 </head>
 <body>
-    <button class="login-btn" id="loginBtn">登录</button>
-    <a href="admin.html" class="admin-link" id="adminLink">
-        <i class="fas fa-cog"></i> 后台管理
-    </a>
+    <div class="navbar">
+        <div class="navbar-left">
+            <a href="#" onclick="showAppointmentForm()">预约挂号</a>
+            <a href="emergency.html">紧急会诊</a>
+        </div>
+        <div class="navbar-right">
+            <a href="followup.html" class="followup-link">复诊时间查询</a>
+            <a href="admin.html" class="admin-link" id="adminLink" style="display: none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                后台管理
+            </a>
+            <a href="#" onclick="handleLoginLogout()" id="loginLogoutBtn">登录</a>
+        </div>
+    </div>
+
+    <div class="doctor-title">
+        <h1>DR.Hee</h1>
+    </div>
+    
     <div class="appointment-container">
-        <div class="doctor-title">
-            <h1>DR.Hee</h1>
-        </div>
-        <div style="text-align: center; margin-bottom: 20px;">
-            <button type="button" 
-                    onclick="submitEmergencyAppointment()" 
-                    style="background: #f56565; width: auto; padding: 10px 20px; margin: 0 auto;">
-                紧急预约
-            </button>
-        </div>
         <h2>在线预约</h2>
         <form action="/submit-appointment" method="POST">
             <div class="form-group">
@@ -766,516 +809,5 @@
             </div>
         </form>
     </div>
-
-    <script>
-        const form = document.querySelector('form');
-        const submitButton = form.querySelector('button[type="submit"]');
-        const inputs = form.querySelectorAll('input, select');
-        
-        // 添加自定义提示框函数
-        function showCustomAlert(messages) {
-            // 移除已存在的提示框
-            const existingAlert = document.querySelector('.custom-alert');
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-            
-            // 创建新的提示框
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'custom-alert';
-            
-            // 添加标题
-            const title = document.createElement('h3');
-            title.textContent = '请完善以下信息：';
-            alertDiv.appendChild(title);
-            
-            // 添加错误信息列表
-            const ul = document.createElement('ul');
-            messages.forEach(msg => {
-                const li = document.createElement('li');
-                li.textContent = msg;
-                li.style.animation = 'fadeIn 0.3s ease-out forwards';
-                li.style.animationDelay = '0.2s';
-                li.style.opacity = '0';
-                ul.appendChild(li);
-            });
-            alertDiv.appendChild(ul);
-            
-            // 添加到页面
-            document.body.appendChild(alertDiv);
-            
-            // 3秒后自动移除
-            setTimeout(() => {
-                alertDiv.style.animation = 'slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => alertDiv.remove(), 500);
-            }, 3000);
-        }
-        
-        // 修改抖动效果函数
-        function shakeElement(element) {
-            // 先移除可能存在的shake类
-            element.classList.remove('shake');
-            // 强制重绘
-            void element.offsetWidth;
-            // 添加shake类触发动画
-            element.classList.add('shake');
-            // 显示错误提示
-            const errorMessage = element.parentElement.querySelector('.error-message');
-            if (errorMessage) {
-                errorMessage.classList.add('show');
-            }
-            // 动画结束后移除类
-            setTimeout(() => {
-                element.classList.remove('shake');
-            }, 600);
-        }
-        
-        // 修改表单提交验证
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let errorMessages = [];
-            let errorFields = [];
-            
-            // 验证姓名
-            if (!form.name.value) {
-                errorMessages.push('请输入姓名');
-                errorFields.push(form.name);
-            }
-            
-            // 验证电话
-            const phonePattern = /^(01)[0-9]{8,9}$/;
-            if (!form.phone.value) {
-                errorMessages.push('请输入联系电话');
-                errorFields.push(form.phone);
-            } else if (!phonePattern.test(form.phone.value)) {
-                errorMessages.push('请输入有效的马来西亚手机号码');
-                errorFields.push(form.phone);
-            }
-            
-            // 验证科室
-            if (!form.department.value) {
-                errorMessages.push('请选择就诊科室');
-                errorFields.push(form.department);
-            }
-            
-            // 验证时间
-            if (!form.time.value) {
-                errorMessages.push('请选择预约时间');
-                errorFields.push(form.time);
-            }
-            
-            // 验证身份证
-            if (!form.idCard.value) {
-                errorMessages.push('请输入身份证号');
-                errorFields.push(form.idCard);
-            } else if (!/^\d{6}-\d{2}-\d{4}$/.test(form.idCard.value)) {
-                errorMessages.push('请输入有效的马来西亚身份证号码（格式：YYMMDD-SS-NNNN）');
-                errorFields.push(form.idCard);
-            }
-            
-            // 如果有错误，显示错误信息
-            if (errorMessages.length > 0) {
-                showCustomAlert(errorMessages);
-                // 为每个错误字段添加抖动效果
-                errorFields.forEach(field => shakeElement(field));
-                return;
-            }
-            
-            // 如果验证通过，保存预约信息
-            if (errorMessages.length === 0) {
-                // 创建新的预约记录
-                const newAppointment = {
-                    id: Date.now(), // 使用时间戳作为唯一ID
-                    date: form.appointmentDate.value,
-                    time: form.time.value,
-                    name: form.name.value,
-                    phone: form.phone.value,
-                    department: form.department.value,
-                    idCard: form.idCard.value,
-                    status: 'pending' // 初始状态为待确认
-                };
-                
-                // 保存到 Firebase
-                database.ref('appointments').push(newAppointment);
-            }
-
-            // 如果验证通过，显示成功消息
-            showSuccessAlert();
-            form.reset();
-            document.getElementById('appointmentDate').value = currentDate;
-        });
-        
-        // 将设置日期的代码移到函数中，方便复用
-        function setTodayDate() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const currentDate = `${year}-${month}-${day}`;
-            document.getElementById('appointmentDate').value = currentDate;
-        }
-        
-        // 页面加载时设置日期
-        setTodayDate();
-        
-        // 监听表单重置事件，确保重置后也显示当天日期
-        form.addEventListener('reset', function() {
-            setTimeout(setTodayDate, 0);
-        });
-        
-        // 添加输入监听，当输入正确时隐藏错误提示
-        inputs.forEach(input => {
-            input.addEventListener('input', function() {
-                const errorMessage = this.parentElement.querySelector('.error-message');
-                if (errorMessage) {
-                    if (this.validity.valid) {
-                        errorMessage.classList.remove('show');
-                    }
-                }
-            });
-        });
-        
-        // 添加成功提示框函数
-        function showSuccessAlert() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                </div>
-                <div class="success-title">预约成功！</div>
-                <div class="success-message">您的预约已经成功提交</div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            // 2秒后淡出并移除
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 500);
-            }, 2000);
-        }
-        
-        // 修改检查登录状态函数
-        function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const adminLink = document.getElementById('adminLink');
-            const loginBtn = document.getElementById('loginBtn');
-            
-            if (isLoggedIn) {
-                adminLink.classList.add('show');
-                loginBtn.textContent = '退出';
-            } else {
-                adminLink.classList.remove('show');
-                loginBtn.textContent = '登录';
-            }
-        }
-        
-        // 页面加载时检查登录状态
-        checkLoginStatus();
-        
-        // 添加快捷键触发登录框
-        document.addEventListener('keydown', function(e) {
-            // 按 Ctrl + L 触发登录框
-            if (e.ctrlKey && e.key === 'l') {
-                const username = prompt('请输入管理员账号：');
-                if (username === null) return;
-                
-                const password = prompt('请输入密码：');
-                if (password === null) return;
-                
-                if (username === 'Hayden' && password === 'Hayden0320') {
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('adminName', 'Hayden');
-                    checkLoginStatus();
-                    showLoginSuccess();
-                } else if (password !== null) {
-                    showLoginError();
-                }
-            }
-            
-            // 按 Ctrl + Q 退出登录
-            if (e.ctrlKey && e.key === 'q') {
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('adminName');
-                checkLoginStatus();
-                showLogoutSuccess();
-            }
-        });
-        
-        // 添加登录成功提示
-        function showLoginSuccess() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            const adminName = localStorage.getItem('adminName');
-            const roleText = adminName === 'Howard' ? '网站拥有者' : '管理员';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M20 6L9 17l-5-5"/>
-                    </svg>
-                </div>
-                <div class="success-title">登录成功</div>
-                <div class="success-message">欢迎回来，${roleText} ${adminName}</div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 500);
-            }, 2000);
-        }
-        
-        // 添加登录错误提示
-        function showLoginError() {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'custom-alert';
-            
-            errorDiv.innerHTML = `
-                <h3 style="color: #e53e3e;">登录失败</h3>
-                <div style="color: #718096;">账号或密码错误，请重试</div>
-            `;
-            
-            document.body.appendChild(errorDiv);
-            
-            setTimeout(() => {
-                errorDiv.style.animation = 'slideIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => errorDiv.remove(), 500);
-            }, 2000);
-        }
-        
-        // 添加退出登录提示
-        function showLogoutSuccess() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon" style="background: #718096;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                        <polyline points="16 17 21 12 16 7"/>
-                        <line x1="21" y1="12" x2="9" y2="12"/>
-                    </svg>
-                </div>
-                <div class="success-title">已退出登录</div>
-                <div class="success-message">期待您的再次访问</div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 500);
-            }, 2000);
-        }
-        
-        // 修改登录按钮点击事件
-        document.getElementById('loginBtn').addEventListener('click', function() {
-            if (localStorage.getItem('isLoggedIn') === 'true') {
-                // 如果已登录，则执行退出操作
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('adminName');
-                checkLoginStatus();
-                showLogoutSuccess();
-            } else {
-                // 创建登录弹窗
-                const modal = document.createElement('div');
-                modal.className = 'login-modal';
-                
-                modal.innerHTML = `
-                    <div class="login-content">
-                        <div class="login-title">
-                            <span>👨‍⚕️</span>
-                            管理员登录
-                        </div>
-                        <input type="text" 
-                               class="login-input" 
-                               placeholder="请输入用户名"
-                               id="username-input">
-                        <input type="password" 
-                               class="login-input" 
-                               placeholder="请输入密码"
-                               id="password-input">
-                        <div class="login-buttons">
-                            <button class="login-submit">登录</button>
-                            <button class="login-cancel">取消</button>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(modal);
-                
-                // 获取元素
-                const usernameInput = modal.querySelector('#username-input');
-                const passwordInput = modal.querySelector('#password-input');
-                const submitBtn = modal.querySelector('.login-submit');
-                const cancelBtn = modal.querySelector('.login-cancel');
-                
-                // 添加事件监听
-                submitBtn.addEventListener('click', () => {
-                    const username = usernameInput.value.trim();
-                    const password = passwordInput.value.trim();
-                    
-                    if ((username === 'Hayden' && password === 'Hayden0320') || 
-                        (username === 'Howard' && password === 'Howard2009')) {
-                        localStorage.setItem('isLoggedIn', 'true');
-                        localStorage.setItem('adminName', username);
-                        modal.remove();
-                        checkLoginStatus();
-                        showLoginSuccess();
-                    } else {
-                        showLoginError();
-                        usernameInput.style.borderColor = '#e53e3e';
-                        passwordInput.style.borderColor = '#e53e3e';
-                    }
-                });
-                
-                cancelBtn.addEventListener('click', () => {
-                    modal.remove();
-                });
-                
-                // 点击背景关闭
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.remove();
-                    }
-                });
-                
-                // 按ESC关闭
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        modal.remove();
-                    }
-                });
-                
-                // 自动聚焦用户名输入框
-                usernameInput.focus();
-                
-                // 添加回车键提交功能
-                passwordInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        submitBtn.click();
-                    }
-                });
-            }
-        });
-        
-        // 修改紧急预约函数
-        function submitEmergencyAppointment() {
-            // 创建紧急预约弹窗
-            const modal = document.createElement('div');
-            modal.className = 'emergency-modal';
-            
-            modal.innerHTML = `
-                <div class="emergency-content">
-                    <div class="emergency-title">
-                        <span style="color: #e53e3e;">⚡</span>
-                        紧急预约
-                    </div>
-                    <input type="text" 
-                           class="emergency-input" 
-                           placeholder="请输入患者姓名"
-                           autofocus>
-                    <div class="emergency-buttons">
-                        <button class="emergency-submit">确认预约</button>
-                        <button class="emergency-cancel">取消</button>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // 获取元素
-            const input = modal.querySelector('.emergency-input');
-            const submitBtn = modal.querySelector('.emergency-submit');
-            const cancelBtn = modal.querySelector('.emergency-cancel');
-            
-            // 添加事件监听
-            submitBtn.addEventListener('click', () => {
-                const name = input.value.trim();
-                if (!name) {
-                    input.style.borderColor = '#e53e3e';
-                    return;
-                }
-                
-                // 创建预约记录
-                const now = new Date();
-                const year = now.getFullYear();
-                const month = String(now.getMonth() + 1).padStart(2, '0');
-                const day = String(now.getDate()).padStart(2, '0');
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                
-                const emergencyAppointment = {
-                    id: Date.now(),
-                    date: `${year}-${month}-${day}`,
-                    time: `${hours}:${minutes}`,
-                    name: name,
-                    phone: '紧急',
-                    department: '紧急',
-                    idCard: '紧急',
-                    status: 'pending',
-                    isEmergency: true
-                };
-                
-                database.ref('appointments').push(emergencyAppointment)
-                    .then(() => {
-                        modal.remove();
-                        showEmergencySuccessAlert();
-                    });
-            });
-            
-            cancelBtn.addEventListener('click', () => {
-                modal.remove();
-            });
-            
-            // 点击背景关闭
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.remove();
-                }
-            });
-            
-            // 按ESC关闭
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    modal.remove();
-                }
-            });
-            
-            // 自动聚焦输入框
-            input.focus();
-        }
-        
-        // 添加紧急预约成功提示
-        function showEmergencySuccessAlert() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon" style="background: #f56565;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <div class="success-title">紧急预约已提交！</div>
-                <div class="success-message">请立即前往医院就诊</div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 500);
-            }, 2000);
-        }
-    </script>
 </body>
 </html> 
