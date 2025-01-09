@@ -418,6 +418,7 @@
             text-align: center;
             animation: slideDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             min-width: 300px;
+            transition: all 0.3s ease;
         }
         
         @keyframes slideDown {
@@ -689,6 +690,63 @@
                     }
                 });
             }
+        }
+
+        // 显示登录成功提示
+        function showLoginSuccess() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            successDiv.innerHTML = `
+                <div style="color: #2f855a; font-weight: 600;">
+                    登录成功！欢迎回来，${localStorage.getItem('adminName')}
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translate(-50%, -100%)';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 2000);
+        }
+
+        // 显示登出成功提示
+        function showLogoutSuccess() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            successDiv.innerHTML = `
+                <div style="color: #2f855a; font-weight: 600;">
+                    已成功退出登录
+                </div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                successDiv.style.transform = 'translate(-50%, -100%)';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 2000);
+        }
+
+        // 显示登录错误提示
+        function showLoginError() {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'success-alert';
+            errorDiv.innerHTML = `
+                <div style="color: #e53e3e; font-weight: 600;">
+                    用户名或密码错误
+                </div>
+            `;
+            
+            document.body.appendChild(errorDiv);
+            
+            setTimeout(() => {
+                errorDiv.style.opacity = '0';
+                errorDiv.style.transform = 'translate(-50%, -100%)';
+                setTimeout(() => errorDiv.remove(), 300);
+            }, 2000);
         }
     </script>
 </head>
