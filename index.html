@@ -418,22 +418,22 @@
         
         /* 修改登录按钮样式 */
         .login-btn {
-            position: fixed;
-            top: 5px;
+            position: absolute;
+            top: 20px;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) !important;
             padding: 10px 20px;
             border: none;
             color: #2d3748;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease;
             font-size: 0.95rem;
             background: rgba(255, 255, 255, 0.9);
             border-radius: 6px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            z-index: 9999;
+            z-index: 1000;
             width: 80px;
             text-align: center;
             height: 35px;
@@ -443,6 +443,169 @@
         
         .login-btn:hover {
             opacity: 0.8;
+            transform: translateX(-50%) !important;
+        }
+        
+        /* 添加紧急预约弹窗样式 */
+        .emergency-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .emergency-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .emergency-title {
+            color: #e53e3e;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .emergency-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e53e3e;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .emergency-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .emergency-submit {
+            background: #e53e3e;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .emergency-cancel {
+            background: #718096;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .emergency-submit:hover,
+        .emergency-cancel:hover {
+            opacity: 0.9;
+        }
+        
+        /* 添加登录弹窗样式 */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .login-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .login-title {
+            color: #2d3748;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .login-input:focus {
+            border-color: #84fab0;
+            outline: none;
+        }
+        
+        .login-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .login-submit {
+            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .login-cancel {
+            background: #718096;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .login-submit:hover,
+        .login-cancel:hover {
+            opacity: 0.9;
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -463,6 +626,36 @@
         // 初始化 Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        
+        // 禁止右键菜单
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 禁止选择文本
+        document.addEventListener('selectstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 禁止复制
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 禁止剪切
+        document.addEventListener('cut', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // 禁止粘贴
+        document.addEventListener('paste', function(e) {
+            e.preventDefault();
+            return false;
+        });
     </script>
 </head>
 <body>
@@ -473,6 +666,13 @@
     <div class="appointment-container">
         <div class="doctor-title">
             <h1>DR.Hee</h1>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button type="button" 
+                    onclick="submitEmergencyAppointment()" 
+                    style="background: #f56565; width: auto; padding: 10px 20px; margin: 0 auto;">
+                紧急预约
+            </button>
         </div>
         <h2>在线预约</h2>
         <form action="/submit-appointment" method="POST">
@@ -504,6 +704,11 @@
                     <option value="">请选择科室</option>
                     <option value="内科">内科</option>
                     <option value="外科">外科</option>
+                    <option value="妇产科">妇产科</option>
+                    <option value="脑科">脑科</option>
+                    <option value="骨科">骨科</option>
+                    <option value="心脏科">心脏科</option>
+                    <option value="精神科">精神科</option>
                 </select>
                 <div class="error-message">请选择就诊科室</div>
             </div>
@@ -544,8 +749,16 @@
 
             <div class="form-group">
                 <label for="idCard">身份证号：</label>
-                <input type="text" id="idCard" name="idCard" required placeholder=" ">
-                <div class="error-message">请输入身份证号</div>
+                <input type="text" 
+                       id="idCard" 
+                       name="idCard" 
+                       pattern="\d{6}-\d{2}-\d{4}"
+                       placeholder="例如：990101-01-1234"
+                       required>
+                <small style="color: #718096; display: block; margin-top: 5px;">
+                    请输入马来西亚身份证号码（格式：YYMMDD-SS-NNNN）
+                </small>
+                <div class="error-message">请输入有效的马来西亚身份证号码</div>
             </div>
 
             <div class="form-group">
@@ -655,6 +868,9 @@
             // 验证身份证
             if (!form.idCard.value) {
                 errorMessages.push('请输入身份证号');
+                errorFields.push(form.idCard);
+            } else if (!/^\d{6}-\d{2}-\d{4}$/.test(form.idCard.value)) {
+                errorMessages.push('请输入有效的马来西亚身份证号码（格式：YYMMDD-SS-NNNN）');
                 errorFields.push(form.idCard);
             }
             
@@ -857,7 +1073,7 @@
             }, 2000);
         }
         
-        // 添加登录按钮点击事件
+        // 修改登录按钮点击事件
         document.getElementById('loginBtn').addEventListener('click', function() {
             if (localStorage.getItem('isLoggedIn') === 'true') {
                 // 如果已登录，则执行退出操作
@@ -866,23 +1082,196 @@
                 checkLoginStatus();
                 showLogoutSuccess();
             } else {
-                // 如果未登录，则显示登录框
-                const username = prompt('请输入管理员账号：');
-                if (username === null) return;
+                // 创建登录弹窗
+                const modal = document.createElement('div');
+                modal.className = 'login-modal';
                 
-                const password = prompt('请输入密码：');
-                if (password === null) return;
+                modal.innerHTML = `
+                    <div class="login-content">
+                        <div class="login-title">
+                            <span>👨‍⚕️</span>
+                            管理员登录
+                        </div>
+                        <input type="text" 
+                               class="login-input" 
+                               placeholder="请输入用户名"
+                               id="username-input">
+                        <input type="password" 
+                               class="login-input" 
+                               placeholder="请输入密码"
+                               id="password-input">
+                        <div class="login-buttons">
+                            <button class="login-submit">登录</button>
+                            <button class="login-cancel">取消</button>
+                        </div>
+                    </div>
+                `;
                 
-                if (username === 'Hayden' && password === 'Hayden0320') {
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('adminName', 'Hayden');
-                    checkLoginStatus();
-                    showLoginSuccess();
-                } else if (password !== null) {
-                    showLoginError();
-                }
+                document.body.appendChild(modal);
+                
+                // 获取元素
+                const usernameInput = modal.querySelector('#username-input');
+                const passwordInput = modal.querySelector('#password-input');
+                const submitBtn = modal.querySelector('.login-submit');
+                const cancelBtn = modal.querySelector('.login-cancel');
+                
+                // 添加事件监听
+                submitBtn.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if (username === 'Hayden' && password === 'Hayden0320') {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('adminName', 'Hayden');
+                        modal.remove();
+                        checkLoginStatus();
+                        showLoginSuccess();
+                    } else {
+                        showLoginError();
+                        usernameInput.style.borderColor = '#e53e3e';
+                        passwordInput.style.borderColor = '#e53e3e';
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', () => {
+                    modal.remove();
+                });
+                
+                // 点击背景关闭
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+                
+                // 按ESC关闭
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        modal.remove();
+                    }
+                });
+                
+                // 自动聚焦用户名输入框
+                usernameInput.focus();
+                
+                // 添加回车键提交功能
+                passwordInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitBtn.click();
+                    }
+                });
             }
         });
+        
+        // 修改紧急预约函数
+        function submitEmergencyAppointment() {
+            // 创建紧急预约弹窗
+            const modal = document.createElement('div');
+            modal.className = 'emergency-modal';
+            
+            modal.innerHTML = `
+                <div class="emergency-content">
+                    <div class="emergency-title">
+                        <span style="color: #e53e3e;">⚡</span>
+                        紧急预约
+                    </div>
+                    <input type="text" 
+                           class="emergency-input" 
+                           placeholder="请输入患者姓名"
+                           autofocus>
+                    <div class="emergency-buttons">
+                        <button class="emergency-submit">确认预约</button>
+                        <button class="emergency-cancel">取消</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // 获取元素
+            const input = modal.querySelector('.emergency-input');
+            const submitBtn = modal.querySelector('.emergency-submit');
+            const cancelBtn = modal.querySelector('.emergency-cancel');
+            
+            // 添加事件监听
+            submitBtn.addEventListener('click', () => {
+                const name = input.value.trim();
+                if (!name) {
+                    input.style.borderColor = '#e53e3e';
+                    return;
+                }
+                
+                // 创建预约记录
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                
+                const emergencyAppointment = {
+                    id: Date.now(),
+                    date: `${year}-${month}-${day}`,
+                    time: `${hours}:${minutes}`,
+                    name: name,
+                    phone: '紧急',
+                    department: '紧急',
+                    idCard: '紧急',
+                    status: 'pending',
+                    isEmergency: true
+                };
+                
+                database.ref('appointments').push(emergencyAppointment)
+                    .then(() => {
+                        modal.remove();
+                        showEmergencySuccessAlert();
+                    });
+            });
+            
+            cancelBtn.addEventListener('click', () => {
+                modal.remove();
+            });
+            
+            // 点击背景关闭
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+            
+            // 按ESC关闭
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                }
+            });
+            
+            // 自动聚焦输入框
+            input.focus();
+        }
+        
+        // 添加紧急预约成功提示
+        function showEmergencySuccessAlert() {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            
+            successDiv.innerHTML = `
+                <div class="success-icon" style="background: #f56565;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="success-title">紧急预约已提交！</div>
+                <div class="success-message">请立即前往医院就诊</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                setTimeout(() => successDiv.remove(), 500);
+            }, 2000);
+        }
     </script>
 </body>
 </html> 
