@@ -10,12 +10,131 @@
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            position: relative;
+            overflow-x: hidden;
+            background: linear-gradient(-45deg, #00c6fb, #005bea, #0093E9, #147bd1);
+            background-size: 300% 300%;
+            animation: gradientBG 8s ease infinite;
             min-height: 100vh;
             color: #2d3748;
         }
         
-        /* 导航栏样式优化 */
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+                background-size: 300% 300%;
+            }
+            25% {
+                background-size: 400% 400%;
+            }
+            50% {
+                background-position: 100% 50%;
+                background-size: 300% 300%;
+            }
+            75% {
+                background-size: 400% 400%;
+            }
+            100% {
+                background-position: 0% 50%;
+                background-size: 300% 300%;
+            }
+        }
+        
+        /* 添加动态波浪效果 */
+        .wave-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(135deg, rgba(0, 198, 251, 0.4), rgba(0, 91, 234, 0.6));
+            border-radius: 40%;
+            transform-origin: 50% 48%;
+            animation: wave 15s infinite linear;
+            filter: blur(3px);
+        }
+        
+        .wave:nth-child(2) {
+            animation-duration: 20s;
+            opacity: 0.7;
+            background: linear-gradient(135deg, rgba(0, 147, 233, 0.4), rgba(20, 123, 209, 0.6));
+        }
+        
+        .wave:nth-child(3) {
+            animation-duration: 25s;
+            opacity: 0.6;
+            background: linear-gradient(135deg, rgba(0, 198, 251, 0.3), rgba(0, 91, 234, 0.5));
+        }
+        
+        @keyframes wave {
+            from {
+                transform: rotate(0deg) scale(1);
+            }
+            50% {
+                transform: rotate(180deg) scale(1.3);
+            }
+            to {
+                transform: rotate(360deg) scale(1);
+            }
+        }
+
+        /* 添加光点效果 */
+        .glow {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glow::before, .glow::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(0, 198, 251, 0.3);
+            filter: blur(30px);
+            animation: glow 10s infinite alternate;
+        }
+
+        .glow::before {
+            top: 20%;
+            left: 20%;
+            background: rgba(0, 91, 234, 0.3);
+            animation-delay: -5s;
+        }
+
+        .glow::after {
+            bottom: 20%;
+            right: 20%;
+            background: rgba(20, 123, 209, 0.3);
+        }
+
+        @keyframes glow {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.5) translate(50px, 50px);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1) translate(100px, 0);
+                opacity: 0.5;
+            }
+        }
+        
+        /* 导航栏样式 */
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             padding: 1rem 2rem;
@@ -61,7 +180,7 @@
             left: 50%;
             width: 0;
             height: 2px;
-            background: #84fab0;
+            background: #00c6fb;
             transition: all 0.3s ease;
             transform: translateX(-50%);
         }
@@ -71,19 +190,19 @@
         }
         
         .navbar a:hover {
-            color: #2f855a;
+            color: #005bea;
             transform: translateY(-2px);
         }
         
         .navbar a.followup-link {
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            background: linear-gradient(135deg, #00c6fb, #005bea);
             color: white;
             border: none;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .navbar a.followup-link:hover {
-            background: linear-gradient(135deg, #68f89e, #7ac8ea);
+            background: linear-gradient(135deg, #005bea, #0093E9);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
@@ -98,7 +217,7 @@
         .doctor-title h1 {
             font-size: 3rem;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             margin: 0;
             letter-spacing: 2px;
             position: relative;
@@ -153,7 +272,7 @@
             left: 50%;
             width: 100px;
             height: 3px;
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            background: linear-gradient(135deg, #00c6fb, #005bea);
             transform: translateX(-50%);
             border-radius: 2px;
         }
@@ -175,7 +294,7 @@
         }
         
         .form-group:focus-within label {
-            color: #2f855a;
+            color: #005bea;
             transform: translateX(5px);
         }
         
@@ -193,23 +312,23 @@
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #84fab0;
-            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.2);
+            border-color: #00c6fb;
+            box-shadow: 0 0 0 3px rgba(0, 198, 251, 0.2);
             transform: translateY(-1px);
         }
         
         .form-group input:hover,
         .form-group select:hover {
-            border-color: #84fab0;
+            border-color: #00c6fb;
         }
         
         /* 提交按钮样式 */
-        .form-group button {
+        button {
             width: 100%;
             padding: 1rem;
             border: none;
             border-radius: 8px;
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            background: linear-gradient(135deg, #00c6fb, #005bea);
             color: white;
             font-size: 1.1rem;
             font-weight: 500;
@@ -218,41 +337,51 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         
-        .form-group button:hover {
+        button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #68f89e, #7ac8ea);
+            background: linear-gradient(135deg, #005bea, #0093E9);
         }
         
-        .form-group button:active {
+        button:active {
             transform: translateY(0);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        /* 错误提示样式优化 */
+        /* 错误提示样式 */
         .error-message {
             color: #e53e3e;
             font-size: 0.875rem;
             margin-top: 0.5rem;
-            display: block;
-            opacity: 0;
-            height: 0;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            padding-left: 0.5rem;
-            border-left: 2px solid #e53e3e;
+            display: none;
         }
         
-        .error-message.show {
-            opacity: 1;
-            height: auto;
-            margin-top: 0.5rem;
-            padding: 0.5rem;
-            background: #fff5f5;
-            border-radius: 4px;
+        /* 成功提示框样式 */
+        .success-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
         }
         
-        /* 添加动画 */
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+        
+        /* 动画效果 */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -313,238 +442,6 @@
             
             .appointment-container h2 {
                 font-size: 1.5rem;
-            }
-        }
-        
-        /* 登录模态框样式优化 */
-        .login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .login-content {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-        
-        .login-title {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.8rem;
-        }
-        
-        .login-input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .login-input:focus {
-            outline: none;
-            border-color: #84fab0;
-            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.2);
-            transform: translateY(-1px);
-        }
-        
-        .login-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        
-        .login-submit, .login-cancel {
-            flex: 1;
-            padding: 0.8rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .login-submit {
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .login-cancel {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-        
-        .login-submit:hover, .login-cancel:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        /* 成功提示框样式优化 */
-        .success-alert {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 1.5rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            text-align: center;
-            animation: slideDown 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            min-width: 300px;
-            transition: all 0.3s ease;
-        }
-        
-        @keyframes slideDown {
-            from {
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-        }
-        
-        /* 后台管理按钮样式 */
-        .admin-link {
-            display: none; /* 默认隐藏 */
-            align-items: center;
-            gap: 0.5rem;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #8fd3f4, #84fab0);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .admin-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #7ac8ea, #68f89e);
-        }
-        
-        .admin-link svg {
-            transition: transform 0.3s ease;
-        }
-        
-        .admin-link:hover svg {
-            transform: scale(1.1);
-        }
-        
-        @media (max-width: 768px) {
-            .admin-link {
-                font-size: 1rem;
-                padding: 0.6rem 1.2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .admin-link {
-                padding: 0.5rem 1rem;
-            }
-            
-            .admin-link svg {
-                width: 16px;
-                height: 16px;
-            }
-        }
-        
-        /* 维护页面样式 */
-        .maintenance-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            backdrop-filter: blur(8px);
-        }
-        
-        .maintenance-content {
-            background: white;
-            padding: 3rem;
-            border-radius: 16px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            animation: fadeInUp 0.6s ease;
-        }
-        
-        .maintenance-icon {
-            width: 80px;
-            height: 80px;
-            background: #f56565;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 2rem;
-            animation: pulse 2s infinite;
-        }
-        
-        .maintenance-icon svg {
-            width: 40px;
-            height: 40px;
-            stroke: white;
-        }
-        
-        .maintenance-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 1rem;
-        }
-        
-        .maintenance-message {
-            color: #718096;
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-        
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.4);
-            }
-            70% {
-                box-shadow: 0 0 0 20px rgba(245, 101, 101, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(245, 101, 101, 0);
             }
         }
     </style>
@@ -892,25 +789,37 @@
                 setTimeout(() => errorDiv.remove(), 300);
             }, 2000);
         }
+
+        // 创建星星效果
+        function createStars() {
+            const stars = document.createElement('div');
+            stars.className = 'stars';
+            document.body.appendChild(stars);
+
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                stars.appendChild(star);
+            }
+        }
+
+        // 页面加载完成后创建星星
+        document.addEventListener('DOMContentLoaded', createStars);
     </script>
 </head>
 <body>
-    <div class="maintenance-overlay">
-        <div class="maintenance-content">
-            <div class="maintenance-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="3"></circle>
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                </svg>
-            </div>
-            <div class="maintenance-title">网站维护中</div>
-            <div class="maintenance-message">
-                抱歉给您带来不便，我们正在进行系统维护和升级。<br>
-                请稍后再试，感谢您的理解。
-            </div>
-        </div>
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
     </div>
-
+    <div class="glow"></div>
+    
     <div class="navbar">
         <div class="navbar-left">
             <a href="#" onclick="showAppointmentForm()">预约挂号</a>
@@ -980,9 +889,76 @@
                        id="appointmentDate" 
                        name="appointmentDate" 
                        required
-                       readonly
-                       onfocus="this.blur()"
+                       min=""
+                       max=""
+                       style="cursor: pointer;"
+                       onclick="this.showPicker()"
                 >
+                <script>
+                    // 设置日期范围和格式化显示
+                    const dateInput = document.getElementById('appointmentDate');
+                    const today = new Date();
+                    const maxDate = new Date();
+                    maxDate.setMonth(today.getMonth() + 1);
+                    
+                    // 设置默认值为今天
+                    dateInput.value = today.toISOString().split('T')[0];
+                    dateInput.min = today.toISOString().split('T')[0];
+                    dateInput.max = maxDate.toISOString().split('T')[0];
+
+                    // 初始化显示当天日期
+                    const initialDate = new Date(dateInput.value);
+                    const initialDay = initialDate.getDate().toString().padStart(2, '0');
+                    const initialMonth = (initialDate.getMonth() + 1).toString().padStart(2, '0');
+                    const initialYear = initialDate.getFullYear();
+                    dateInput.setAttribute('data-date', `${initialDay}/${initialMonth}/${initialYear}`);
+
+                    // 格式化日期显示
+                    dateInput.addEventListener('change', function() {
+                        if (this.value) {
+                            const date = new Date(this.value);
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                            const year = date.getFullYear();
+                            const formattedDate = `${day}/${month}/${year}`;
+                            this.setAttribute('data-date', formattedDate);
+                        }
+                    });
+                </script>
+                <style>
+                    input[type="date"] {
+                        position: relative;
+                        color: transparent;
+                        background: white;
+                        width: 150px;
+                        padding-right: 30px;
+                    }
+                    
+                    input[type="date"]::-webkit-calendar-picker-indicator {
+                        position: absolute;
+                        right: 10px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        cursor: pointer;
+                    }
+                    
+                    input[type="date"]::before {
+                        content: attr(data-date);
+                        position: absolute;
+                        left: 10px;
+                        top: 50%;
+                        transform: translateY(-50%);
+                        color: black;
+                        background: white;
+                        line-height: 1;
+                        height: 100%;
+                        width: calc(100% - 40px);
+                        display: flex;
+                        align-items: center;
+                        pointer-events: none;
+                        white-space: nowrap;
+                    }
+                </style>
             </div>
 
             <div class="form-group">
@@ -991,7 +967,7 @@
                        id="time" 
                        name="time" 
                        required
-                       style="cursor: pointer; padding-right: 10px;"
+                       style="cursor: pointer; width: 150px; padding-right: 30px;"
                        onclick="this.showPicker()"
                 >
                 <div class="error-message">请选择预约时间</div>
