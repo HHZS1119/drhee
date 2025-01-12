@@ -310,6 +310,72 @@
                 justify-content: center;
             }
         }
+
+        .hospital-info-manager {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .hospital-info-manager h3 {
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .info-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .info-form input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .info-form input:focus {
+            outline: none;
+            border-color: #0093E9;
+            box-shadow: 0 0 0 3px rgba(0, 147, 233, 0.2);
+        }
+
+        .update-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #0093E9, #147bd1);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .update-btn:hover {
+            background: linear-gradient(135deg, #147bd1, #0093E9);
+            transform: translateY(-2px);
+        }
+
+        .update-btn svg {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -341,6 +407,35 @@
                 </svg>
                 清除所有记录
             </button>
+        </div>
+
+        <div class="hospital-info-manager">
+            <h3>医院信息管理</h3>
+            <div class="info-form">
+                <div class="form-group">
+                    <label>营业时间</label>
+                    <input type="text" id="weekdayHours" placeholder="周一至周五营业时间">
+                    <input type="text" id="saturdayHours" placeholder="周六营业时间">
+                    <input type="text" id="sundayHours" placeholder="周日营业时间">
+                </div>
+                <div class="form-group">
+                    <label>联系方式</label>
+                    <input type="text" id="phone" placeholder="联系电话">
+                    <input type="email" id="email" placeholder="电子邮箱">
+                </div>
+                <div class="form-group">
+                    <label>地址</label>
+                    <input type="text" id="address" placeholder="医院地址">
+                </div>
+                <button onclick="updateHospitalInfo()" class="update-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    更新信息
+                </button>
+            </div>
         </div>
 
         <div class="filters">
@@ -1093,6 +1188,46 @@
         // 页面加载时检查登录状态
         document.addEventListener('DOMContentLoaded', function() {
             checkLoginStatus();
+        });
+
+        // 从 Firebase 获取医院信息
+        function getHospitalInfo() {
+            const hospitalInfoRef = database.ref('hospitalInfo');
+            hospitalInfoRef.once('value').then((snapshot) => {
+                const info = snapshot.val() || {};
+                document.getElementById('weekdayHours').value = info.weekdayHours || '';
+                document.getElementById('saturdayHours').value = info.saturdayHours || '';
+                document.getElementById('sundayHours').value = info.sundayHours || '';
+                document.getElementById('phone').value = info.phone || '';
+                document.getElementById('email').value = info.email || '';
+                document.getElementById('address').value = info.address || '';
+            });
+        }
+
+        // 更新医院信息
+        function updateHospitalInfo() {
+            const info = {
+                weekdayHours: document.getElementById('weekdayHours').value,
+                saturdayHours: document.getElementById('saturdayHours').value,
+                sundayHours: document.getElementById('sundayHours').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                address: document.getElementById('address').value,
+                lastUpdated: new Date().toISOString()
+            };
+
+            database.ref('hospitalInfo').set(info)
+                .then(() => {
+                    alert('医院信息更新成功！');
+                })
+                .catch((error) => {
+                    alert('更新失败：' + error.message);
+                });
+        }
+
+        // 页面加载时获取医院信息
+        document.addEventListener('DOMContentLoaded', function() {
+            getHospitalInfo();
         });
     </script>
 </body>

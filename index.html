@@ -210,31 +210,43 @@
         /* 医生标题样式 */
         .doctor-title {
             text-align: center;
-            margin: 3rem 0;
-            animation: fadeInUp 1s ease;
+            margin: 2rem 0;
+            color: #2c3e50;
         }
         
         .doctor-title h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            margin: 0;
-            letter-spacing: 2px;
-            position: relative;
-            display: inline-block;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            -webkit-text-fill-color: white;
         }
         
-        .doctor-title h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            width: 60%;
-            height: 3px;
-            background: white;
-            transform: translateX(-50%);
-            border-radius: 2px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        .doctor-title h2 {
+            font-size: 2rem;
+            color: white;
+            margin-top: 0.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .doctor-title h1 {
+                font-size: 2.2rem;
+            }
+            .doctor-title h2 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .doctor-title h1 {
+                font-size: 1.8rem;
+            }
+            .doctor-title h2 {
+                font-size: 1.5rem;
+            }
         }
         
         /* 预约表单容器样式 */
@@ -259,10 +271,11 @@
         
         .appointment-container h2 {
             text-align: center;
-            color: #2d3748;
+            color: #1a202c;
             font-size: 2rem;
             margin-bottom: 2rem;
             position: relative;
+            font-weight: 700;
         }
         
         .appointment-container h2::after {
@@ -286,8 +299,8 @@
         .form-group label {
             display: block;
             margin-bottom: 0.8rem;
-            font-weight: 500;
-            color: #2d3748;
+            font-weight: 600;
+            color: #1a202c;
             font-size: 1rem;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
@@ -307,6 +320,8 @@
             font-size: 1rem;
             transition: all 0.3s ease;
             background: white;
+            color: #1a202c;
+            font-weight: 500;
         }
         
         .form-group input:focus,
@@ -354,6 +369,7 @@
             font-size: 0.875rem;
             margin-top: 0.5rem;
             display: none;
+            font-weight: 500;
         }
         
         /* 成功提示框样式 */
@@ -476,15 +492,17 @@
         }
 
         .feature-item h3 {
-            color: #2c3e50;
+            color: #1a202c;
             margin-bottom: 0.5rem;
             font-size: 1.2rem;
+            font-weight: 600;
         }
 
         .feature-item p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
+            color: #2d3748;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
@@ -499,6 +517,29 @@
             .hospital-features {
                 grid-template-columns: 1fr;
             }
+        }
+
+        /* 医院信息文字加深 */
+        .info-section h3 {
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .info-section li {
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        /* 导航栏文字加深 */
+        .navbar a {
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        /* 提示文字加深 */
+        small {
+            color: #4a5568 !important;
+            font-weight: 500;
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -866,6 +907,35 @@
 
         // 页面加载完成后创建星星
         document.addEventListener('DOMContentLoaded', createStars);
+
+        // 获取并显示医院信息
+        function displayHospitalInfo() {
+            const hospitalInfoRef = database.ref('hospitalInfo');
+            hospitalInfoRef.on('value', (snapshot) => {
+                const info = snapshot.val() || {};
+                
+                // 更新营业时间
+                document.getElementById('weekdayHours').textContent = 
+                    `周一至周五：${info.weekdayHours || '9:00 - 18:00'}`;
+                document.getElementById('saturdayHours').textContent = 
+                    `周六：${info.saturdayHours || '9:00 - 12:00'}`;
+                document.getElementById('sundayHours').textContent = 
+                    `周日：${info.sundayHours || '休息'}`;
+                
+                // 更新联系方式
+                document.getElementById('phone').textContent = 
+                    `电话：${info.phone || '123-456-7890'}`;
+                document.getElementById('email').textContent = 
+                    `邮箱：${info.email || 'info@drhee.com'}`;
+                document.getElementById('address').textContent = 
+                    `地址：${info.address || '香港特别行政区'}`;
+            });
+        }
+
+        // 页面加载时获取医院信息
+        document.addEventListener('DOMContentLoaded', function() {
+            displayHospitalInfo();
+        });
     </script>
 </head>
 <body>
@@ -896,7 +966,8 @@
     </div>
 
     <div class="doctor-title">
-        <h1>Dr. Hee's Clinic</h1>
+        <h1>Nation Medical Hospital Center (Miri)</h1>
+        <h2>DR. HEE ZHI SHANG</h2>
     </div>
 
     <div class="hospital-features">
@@ -965,15 +1036,17 @@
         }
 
         .feature-item h3 {
-            color: #2c3e50;
+            color: #1a202c;
             margin-bottom: 0.5rem;
             font-size: 1.2rem;
+            font-weight: 600;
         }
 
         .feature-item p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
+            color: #2d3748;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
@@ -1153,10 +1226,10 @@
                 </svg>
                 营业时间
             </h3>
-            <ul>
-                <li>周一至周五：9:00 - 18:00</li>
-                <li>周六：9:00 - 12:00</li>
-                <li>周日：休息</li>
+            <ul id="businessHours">
+                <li id="weekdayHours">周一至周五：加载中...</li>
+                <li id="saturdayHours">周六：加载中...</li>
+                <li id="sundayHours">周日：加载中...</li>
             </ul>
         </div>
         <div class="info-section">
@@ -1166,10 +1239,10 @@
                 </svg>
                 联系方式
             </h3>
-            <ul>
-                <li>电话：123-456-7890</li>
-                <li>邮箱：info@drhee.com</li>
-                <li>地址：香港特别行政区</li>
+            <ul id="contactInfo">
+                <li id="phone">电话：加载中...</li>
+                <li id="email">邮箱：加载中...</li>
+                <li id="address">地址：加载中...</li>
             </ul>
         </div>
     </div>
@@ -1197,9 +1270,10 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: #2c3e50;
+            color: #1a202c;
             margin-bottom: 1rem;
             font-size: 1.3rem;
+            font-weight: 600;
         }
 
         .info-section svg {
@@ -1213,9 +1287,10 @@
         }
 
         .info-section li {
-            color: #666;
+            color: #2d3748;
             padding: 0.5rem 0;
             border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            font-weight: 500;
         }
 
         .info-section li:last-child {
