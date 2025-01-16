@@ -15,6 +15,81 @@
             min-height: 100vh;
         }
 
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            text-align: left;
+        }
+
+        .logo h1 {
+            margin: 0;
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .logo p {
+            margin: 5px 0 0;
+            color: #718096;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: white;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
         .followup-container {
             max-width: 800px;
             margin: 40px auto;
@@ -108,362 +183,51 @@
         }
 
         .add-followup {
-            margin-bottom: 20px;
-        }
-
-        .add-form {
-            background: white;
+            margin-top: 20px;
             padding: 20px;
+            background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
+        .add-form {
+            display: grid;
+            gap: 15px;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #4a5568;
+            color: #2d3748;
             font-weight: 500;
         }
 
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 8px 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #84fab0;
-            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.1);
+        .form-group input,
+        .form-group select {
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
         }
 
         .btn-add {
-            background: linear-gradient(45deg, #84fab0, #8fd3f4);
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
             color: white;
-            width: 100%;
-            padding: 10px;
-            font-size: 1rem;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .success-alert {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            text-align: center;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translate(-50%, -100%);
-                opacity: 0;
-            }
-            to {
-                transform: translate(-50%, 0);
-                opacity: 1;
-            }
-        }
-
-        .back-btn {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: white;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            color: #4a5568;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s;
-        }
-
-        .back-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 登录模态框样式 */
-        .login-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .login-content {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            animation: slideIn 0.3s ease;
-        }
-        
-        .login-title {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #2d3748;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .login-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 2px solid #e2e8f0;
-            border-radius: 6px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        .login-input:focus {
-            outline: none;
-            border-color: #84fab0;
-            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.1);
-        }
-        
-        .login-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .login-submit, .login-cancel {
-            flex: 1;
             padding: 10px;
             border: none;
             border-radius: 6px;
-            font-size: 1rem;
             cursor: pointer;
+            font-weight: 500;
             transition: all 0.3s;
         }
-        
-        .login-submit {
-            background: #84fab0;
-            color: #2f855a;
-        }
-        
-        .login-cancel {
-            background: #e2e8f0;
-            color: #4a5568;
-        }
-        
-        .login-submit:hover, .login-cancel:hover {
+
+        .btn-add:hover {
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 1rem 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        
-        .navbar:hover {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        
-        .back-home {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #2d3748;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .back-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #68f89e, #7ac8ea);
-        }
-        
-        .back-home svg {
-            transition: transform 0.3s ease;
-        }
-        
-        .back-home:hover svg {
-            transform: scale(1.1);
-        }
-        
-        @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-            }
-            
-            .back-home {
-                font-size: 1rem;
-                padding: 0.6rem 1.2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .navbar {
-                padding: 0.8rem;
-            }
-            
-            .back-home {
-                padding: 0.5rem 1rem;
-            }
-            
-            .back-home svg {
-                width: 16px;
-                height: 16px;
-            }
-        }
-        
-        .navbar-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .admin-link {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #8fd3f4, #84fab0);
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .admin-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #7ac8ea, #68f89e);
-        }
-        
-        .admin-link svg {
-            transition: transform 0.3s ease;
-        }
-        
-        .admin-link:hover svg {
-            transform: scale(1.1);
-        }
-        
-        @media (max-width: 768px) {
-            .admin-link {
-                font-size: 1rem;
-                padding: 0.6rem 1.2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .admin-link {
-                padding: 0.5rem 1rem;
-            }
-            
-            .admin-link svg {
-                width: 16px;
-                height: 16px;
-            }
-        }
-        
-        .admin-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #2d3748;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1.1rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #8fd3f4, #84fab0);
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        .admin-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #7ac8ea, #68f89e);
-        }
-        
-        .admin-btn svg {
-            transition: transform 0.3s ease;
-        }
-        
-        .admin-btn:hover svg {
-            transform: scale(1.1);
-        }
-        
-        @media (max-width: 768px) {
-            .admin-btn {
-                font-size: 1rem;
-                padding: 0.6rem 1.2rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .admin-btn {
-                padding: 0.5rem 1rem;
-            }
-            
-            .admin-btn svg {
-                width: 16px;
-                height: 16px;
-            }
         }
 
         .search-section {
@@ -473,30 +237,28 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        
+
         .search-form {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 1rem;
         }
-        
-        @media (max-width: 768px) {
-            .search-form {
-                grid-template-columns: 1fr;
-            }
+
+        .search-form input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
         }
-        
+
         .search-form input:focus {
             outline: none;
             border-color: #84fab0;
             box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.1);
         }
-        
-        .followup-item {
-            animation: slideIn 0.3s ease;
-            border-left: 4px solid #84fab0;
-        }
-        
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -506,6 +268,36 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .logo {
+                text-align: center;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group input[type="date"],
+        .form-group input[type="time"] {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -522,9 +314,11 @@
                     <li><a href="emergency.html">急诊咨询</a></li>
                     <li><a href="followup.html" class="active">复诊预约</a></li>
                     <li><a href="admin.html">管理系统</a></li>
+                    <li><button id="loginLogoutBtn" class="login-btn">登录</button></li>
                 </ul>
             </nav>
         </div>
+
         <div class="followup-container">
             <h2>复诊预约</h2>
             
@@ -534,29 +328,11 @@
                     <div class="form-group">
                         <input type="text" 
                                id="searchInput" 
-                               placeholder="搜索患者姓名或科室..."
-                               style="
-                                   width: 100%;
-                                   padding: 12px;
-                                   border: 2px solid #e2e8f0;
-                                   border-radius: 8px;
-                                   font-size: 1rem;
-                                   transition: all 0.3s ease;
-                               "
-                        >
+                               placeholder="搜索患者姓名或科室...">
                     </div>
                     <div class="form-group">
                         <input type="date" 
-                               id="dateFilter" 
-                               style="
-                                   width: 100%;
-                                   padding: 12px;
-                                   border: 2px solid #e2e8f0;
-                                   border-radius: 8px;
-                                   font-size: 1rem;
-                                   transition: all 0.3s ease;
-                               "
-                        >
+                               id="dateFilter">
                     </div>
                 </div>
             </div>
@@ -624,49 +400,86 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 修改检查权限函数
-        function checkPermission() {
+        // 检查登录状态
+        function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const adminName = localStorage.getItem('adminName');
+            const loginLogoutBtn = document.getElementById('loginLogoutBtn');
             const adminControls = document.getElementById('adminControls');
             
-            // 显示/隐藏管理员控制区域
-            if (adminControls) {
-                adminControls.style.display = isLoggedIn ? 'block' : 'none';
+            if (isLoggedIn && adminName) {
+                loginLogoutBtn.textContent = '退出';
+                if (adminControls) adminControls.style.display = 'block';
+            } else {
+                loginLogoutBtn.textContent = '登录';
+                if (adminControls) adminControls.style.display = 'none';
             }
         }
 
-        // 添加复诊记录
-        function addFollowup() {
-            const patientName = document.getElementById('patientName').value;
-            const followupDate = document.getElementById('followupDate').value;
-            const followupTime = document.getElementById('followupTime').value;
-            const department = document.getElementById('department').value;
-            const notes = document.getElementById('notes').value;
-
-            if (!patientName || !followupDate || !followupTime || !department) {
-                alert('请填写必要信息');
-                return;
-            }
-
-            const followup = {
-                patientName,
-                followupDate,
-                followupTime,
-                department,
-                notes,
-                createdAt: new Date().toISOString(),
-                createdBy: localStorage.getItem('adminName')
-            };
-
-            database.ref('followups').push(followup)
-                .then(() => {
-                    showSuccess('添加成功');
-                    clearForm();
-                })
-                .catch(error => {
-                    alert('添加失败：' + error.message);
+        // 处理登录/登出
+        function handleLoginLogout(e) {
+            if (e) e.preventDefault();
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('adminName');
+                checkLoginStatus();
+                showLogoutSuccess();
+            } else {
+                const modal = document.createElement('div');
+                modal.className = 'login-modal';
+                
+                modal.innerHTML = `
+                    <div class="login-content">
+                        <div class="login-title">
+                            <span>👨‍⚕️</span>
+                            管理员登录
+                        </div>
+                        <input type="text" 
+                               class="login-input" 
+                               placeholder="请输入用户名"
+                               id="username-input">
+                        <input type="password" 
+                               class="login-input" 
+                               placeholder="请输入密码"
+                               id="password-input">
+                        <div class="login-buttons">
+                            <button class="login-submit">登录</button>
+                            <button class="login-cancel">取消</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                const usernameInput = modal.querySelector('#username-input');
+                const passwordInput = modal.querySelector('#password-input');
+                const submitBtn = modal.querySelector('.login-submit');
+                const cancelBtn = modal.querySelector('.login-cancel');
+                
+                submitBtn.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if ((username === 'Hayden' && password === 'Hayden0320') || 
+                        (username === 'Howard' && password === 'Howard2009')) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('adminName', username);
+                        modal.remove();
+                        checkLoginStatus();
+                        showLoginSuccess();
+                    } else {
+                        showLoginError();
+                    }
                 });
+                
+                cancelBtn.addEventListener('click', () => modal.remove());
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            }
         }
 
         // 加载复诊记录
@@ -741,45 +554,37 @@
             });
         }
 
-        // 格式化日期显示
-        function formatDate(dateStr) {
-            const date = new Date(dateStr);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}年${month}月${day}日`;
-        }
+        // 添加复诊记录
+        function addFollowup() {
+            const patientName = document.getElementById('patientName').value;
+            const followupDate = document.getElementById('followupDate').value;
+            const followupTime = document.getElementById('followupTime').value;
+            const department = document.getElementById('department').value;
+            const notes = document.getElementById('notes').value;
 
-        // 添加搜索和日期过滤事件监听
-        document.getElementById('searchInput').addEventListener('input', loadFollowups);
-        document.getElementById('dateFilter').addEventListener('change', loadFollowups);
-
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            checkPermission();
-            loadFollowups();
-            
-            // 设置日期选择器的范围
-            const dateFilter = document.getElementById('dateFilter');
-            const today = new Date();
-            const maxDate = new Date();
-            maxDate.setMonth(today.getMonth() + 3); // 最多显示3个月内的记录
-            
-            dateFilter.min = today.toISOString().split('T')[0];
-            dateFilter.max = maxDate.toISOString().split('T')[0];
-        });
-
-        // 删除复诊记录
-        function deleteFollowup(followupId) {
-            if (confirm('确定要删除这条复诊记录吗？')) {
-                database.ref(`followups/${followupId}`).remove()
-                    .then(() => {
-                        showSuccess('删除成功');
-                    })
-                    .catch(error => {
-                        alert('删除失败：' + error.message);
-                    });
+            if (!patientName || !followupDate || !followupTime || !department) {
+                showError('请填写必要信息');
+                return;
             }
+
+            const followup = {
+                patientName,
+                followupDate,
+                followupTime,
+                department,
+                notes,
+                createdAt: new Date().toISOString(),
+                createdBy: localStorage.getItem('adminName')
+            };
+
+            database.ref('followups').push(followup)
+                .then(() => {
+                    showSuccess('添加成功');
+                    clearForm();
+                })
+                .catch(error => {
+                    showError('添加失败：' + error.message);
+                });
         }
 
         // 编辑复诊记录
@@ -808,7 +613,7 @@
             const notes = document.getElementById('notes').value;
 
             if (!patientName || !followupDate || !followupTime || !department) {
-                alert('请填写必要信息');
+                showError('请填写必要信息');
                 return;
             }
 
@@ -829,8 +634,30 @@
                     resetAddButton();
                 })
                 .catch(error => {
-                    alert('更新失败：' + error.message);
+                    showError('更新失败：' + error.message);
                 });
+        }
+
+        // 删除复诊记录
+        function deleteFollowup(followupId) {
+            if (confirm('确定要删除这条复诊记录吗？')) {
+                database.ref(`followups/${followupId}`).remove()
+                    .then(() => {
+                        showSuccess('删除成功');
+                    })
+                    .catch(error => {
+                        showError('删除失败：' + error.message);
+                    });
+            }
+        }
+
+        // 格式化日期显示
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
         }
 
         // 清空表单
@@ -865,210 +692,44 @@
             }, 2000);
         }
 
-        // 页面加载时检查权限并加载数据
-        window.addEventListener('load', function() {
-            checkPermission();
-            loadFollowups();
-        });
-
-        // 修改页面标题
-        document.addEventListener('DOMContentLoaded', function() {
-            const title = document.querySelector('h2');
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
-            if (!isLoggedIn) {
-                title.textContent = '复诊预约';
-                // 添加提示信息
-                const infoDiv = document.createElement('div');
-                infoDiv.style.textAlign = 'center';
-                infoDiv.style.marginBottom = '20px';
-                infoDiv.style.color = '#718096';
-                infoDiv.textContent = '登录后可添加和管理复诊记录';
-                title.parentNode.insertBefore(infoDiv, title.nextSibling);
-            }
-        });
-
-        // 保存登录状态的函数
-        function saveLoginState() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const adminName = localStorage.getItem('adminName');
-            
-            if (isLoggedIn && adminName) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('adminName', adminName);
-            }
-        }
-
-        // 处理登录/登出逻辑
-        function handleLoginLogout(e) {
-            if (e) e.preventDefault();
-            
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            
-            if (isLoggedIn) {
-                // 如果已登录，则执行退出操作
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('adminName');
-                checkLoginStatus();
-                showLogoutSuccess();
-                location.reload(); // 刷新页面以更新UI
-            } else {
-                // 创建登录弹窗
-                const modal = document.createElement('div');
-                modal.className = 'login-modal';
-                
-                modal.innerHTML = `
-                    <div class="login-content">
-                        <div class="login-title">
-                            <span>👨‍⚕️</span>
-                            管理员登录
-                        </div>
-                        <input type="text" 
-                               class="login-input" 
-                               placeholder="请输入用户名"
-                               id="username-input">
-                        <input type="password" 
-                               class="login-input" 
-                               placeholder="请输入密码"
-                               id="password-input">
-                        <div class="login-buttons">
-                            <button class="login-submit">登录</button>
-                            <button class="login-cancel">取消</button>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(modal);
-                
-                // 获取元素
-                const usernameInput = modal.querySelector('#username-input');
-                const passwordInput = modal.querySelector('#password-input');
-                const submitBtn = modal.querySelector('.login-submit');
-                const cancelBtn = modal.querySelector('.login-cancel');
-                
-                // 添加事件监听
-                submitBtn.addEventListener('click', () => {
-                    const username = usernameInput.value.trim();
-                    const password = passwordInput.value.trim();
-                    
-                    if ((username === 'Hayden' && password === 'Hayden0320') || 
-                        (username === 'Howard' && password === 'Howard2009')) {
-                        localStorage.setItem('isLoggedIn', 'true');
-                        localStorage.setItem('adminName', username);
-                        modal.remove();
-                        checkLoginStatus();
-                        showLoginSuccess();
-                        location.reload(); // 刷新页面以更新UI
-                    } else {
-                        showLoginError();
-                        usernameInput.style.borderColor = '#e53e3e';
-                        passwordInput.style.borderColor = '#e53e3e';
-                    }
-                });
-                
-                cancelBtn.addEventListener('click', () => {
-                    modal.remove();
-                });
-                
-                // 点击背景关闭
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.remove();
-                    }
-                });
-                
-                // 按ESC关闭
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        modal.remove();
-                    }
-                });
-                
-                // 自动聚焦用户名输入框
-                usernameInput.focus();
-            }
-        }
-
-        // 显示登录成功提示
+        // 显示登录成功
         function showLoginSuccess() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            successDiv.innerHTML = `
-                <div style="color: #2f855a; font-weight: 600;">
-                    登录成功！欢迎回来，${localStorage.getItem('adminName')}
-                </div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.opacity = '0';
-                setTimeout(() => successDiv.remove(), 300);
-            }, 2000);
+            showSuccess(`登录成功！欢迎回来，${localStorage.getItem('adminName')}`);
         }
 
-        // 显示登出成功提示
+        // 显示登出成功
         function showLogoutSuccess() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            successDiv.innerHTML = `
-                <div style="color: #2f855a; font-weight: 600;">
-                    已成功退出登录
-                </div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.opacity = '0';
-                setTimeout(() => successDiv.remove(), 300);
-            }, 2000);
+            showSuccess('已成功退出登录');
         }
 
-        // 显示登录错误提示
+        // 显示登录错误
         function showLoginError() {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'success-alert';
-            errorDiv.innerHTML = `
-                <div style="color: #e53e3e; font-weight: 600;">
-                    用户名或密码错误
-                </div>
-            `;
-            
-            document.body.appendChild(errorDiv);
-            
-            setTimeout(() => {
-                errorDiv.style.opacity = '0';
-                setTimeout(() => errorDiv.remove(), 300);
-            }, 2000);
+            showSuccess('用户名或密码错误');
         }
 
-        // 检查登录状态
-        function checkLoginStatus() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const loginLogoutBtn = document.getElementById('loginLogoutBtn');
-            const adminLink = document.getElementById('adminLink');
-            
-            if (isLoggedIn) {
-                loginLogoutBtn.textContent = '退出';
-                loginLogoutBtn.onclick = handleLoginLogout;
-                if (adminLink) {
-                    adminLink.style.display = 'flex';
-                }
-            } else {
-                loginLogoutBtn.textContent = '登录';
-                loginLogoutBtn.onclick = handleLoginLogout;
-                if (adminLink) {
-                    adminLink.style.display = 'none';
-                }
-            }
+        // 显示错误提示
+        function showError(message) {
+            showSuccess(message);
         }
 
-        // 页面加载时检查登录状态
+        // 添加事件监听
+        document.getElementById('loginLogoutBtn').addEventListener('click', handleLoginLogout);
+        document.getElementById('searchInput').addEventListener('input', loadFollowups);
+        document.getElementById('dateFilter').addEventListener('change', loadFollowups);
+        
+        // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             checkLoginStatus();
-            checkPermission();
             loadFollowups();
+            
+            // 设置日期选择器的范围
+            const dateFilter = document.getElementById('dateFilter');
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setMonth(today.getMonth() + 3); // 最多显示3个月内的记录
+            
+            dateFilter.min = today.toISOString().split('T')[0];
+            dateFilter.max = maxDate.toISOString().split('T')[0];
         });
     </script>
 </body>

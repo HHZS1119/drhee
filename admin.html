@@ -4,65 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理系统 - Dr. Hee's Clinic</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
-        /* 导航栏样式 */
-        .navbar {
-            background: linear-gradient(135deg, #ffffff, #f6f8fc);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            text-align: left;
+        }
+
+        .logo h1 {
+            margin: 0;
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .logo p {
+            margin: 5px 0 0;
+            color: #718096;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: white;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
         }
 
-        .home-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.8rem;
-            color: #4a5568;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            padding: 0.8rem 1.8rem;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
-            color: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .home-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            background: linear-gradient(135deg, #7ee8a0, #7ac8ea);
-        }
-
-        .home-button svg {
-            transition: transform 0.3s ease;
-        }
-
-        .home-button:hover svg {
-            transform: scale(1.1) rotate(-5deg);
-        }
-
-        /* 管理面板样式 */
-        .admin-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 2.5rem;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-
         h2 {
-            color: #2d3748;
-            font-size: 2rem;
-            margin-bottom: 2.5rem;
-            position: relative;
-            padding-bottom: 0.8rem;
             text-align: center;
+            color: #2d3748;
+            margin-bottom: 30px;
+            font-size: 1.75rem;
+            position: relative;
+            padding-bottom: 15px;
         }
 
         h2::after {
@@ -71,242 +115,176 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 100px;
+            width: 60px;
             height: 4px;
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            background: linear-gradient(45deg, #a1c4fd, #c2e9fb);
             border-radius: 2px;
         }
 
-        /* 功能按钮区域 */
-        .function-buttons {
-            text-align: right;
-            margin-bottom: 2rem;
+        .admin-content {
+            display: none;
+        }
+
+        .admin-login {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .admin-login h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .admin-login p {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .appointment-list {
+            margin-top: 30px;
+        }
+
+        .appointment-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-
-        .function-button {
-            display: inline-flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.3s ease;
         }
 
-        .function-button.followup {
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
-            color: white;
+        .patient-info {
+            flex: 1;
         }
 
-        .function-button.clear {
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            color: white;
-        }
-
-        .function-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        /* 筛选器样式优化 */
-        .filters {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2.5rem;
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .filter-group label {
-            color: #4a5568;
+        .patient-name {
             font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .filter-group select,
-        .filter-group input {
-            width: 100%;
-            padding: 0.8rem 1.2rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1rem;
             color: #2d3748;
-            background: white;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
         }
 
-        .filter-group select:hover,
-        .filter-group input:hover {
-            border-color: #84fab0;
-        }
-
-        .filter-group select:focus,
-        .filter-group input:focus {
-            outline: none;
-            border-color: #84fab0;
-            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.2);
-        }
-
-        /* 表格样式优化 */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 1.5rem;
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        th {
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            color: #4a5568;
-            font-weight: 600;
-            padding: 1.2rem 1.5rem;
-            text-align: left;
-            font-size: 1rem;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        td {
-            padding: 1.2rem 1.5rem;
-            color: #2d3748;
-            font-size: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-
-        tr:hover td {
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-        }
-
-        /* 状态标签样式优化 */
-        .status-pending,
-        .status-confirmed,
-        .status-cancelled,
-        .status-completed {
-            padding: 0.5rem 1.2rem;
-            border-radius: 25px;
+        .appointment-details {
+            color: #718096;
             font-size: 0.9rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
-        .status-pending {
-            background: linear-gradient(135deg, #fefcbf, #faf089);
-            color: #975a16;
+        .actions {
+            display: flex;
+            gap: 10px;
         }
 
-        .status-confirmed {
-            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-            color: #2f855a;
-        }
-
-        .status-cancelled {
-            background: linear-gradient(135deg, #fed7d7, #feb2b2);
-            color: #c53030;
-        }
-
-        .status-completed {
-            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
-            color: #2c7a7b;
-        }
-
-        /* 操作按钮样式优化 */
         .btn {
-            padding: 0.7rem 1.4rem;
+            padding: 8px 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+            transition: all 0.3s;
         }
 
-        .btn-confirm {
-            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+        .btn-approve {
+            background: #68d391;
             color: white;
         }
 
-        .btn-cancel {
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            color: white;
-        }
-
-        .btn-complete {
-            background: linear-gradient(135deg, #a8edea, #fed6e3);
+        .btn-reject {
+            background: #fc8181;
             color: white;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* 响应式优化 */
-        @media (max-width: 1024px) {
-            .admin-container {
-                margin: 1.5rem;
-                padding: 2rem;
-            }
+        .search-section {
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
 
-            .filters {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                padding: 1.5rem;
-            }
+        .search-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
 
-            h2 {
-                font-size: 1.8rem;
+        .search-form input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-form input:focus {
+            outline: none;
+            border-color: #a1c4fd;
+            box-shadow: 0 0 0 3px rgba(161, 196, 253, 0.1);
+        }
+
+        .status-filter {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .status-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .status-btn.active {
+            background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                padding: 1rem;
-            }
-
-            .home-button {
-                padding: 0.7rem 1.4rem;
-                font-size: 1rem;
-            }
-
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-
-            .btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
-            }
-
-            .function-buttons {
+            .header {
                 flex-direction: column;
-                align-items: stretch;
+                text-align: center;
+                gap: 20px;
             }
 
-            .function-button {
-                width: 100%;
+            .logo {
+                text-align: center;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            .status-filter {
+                flex-wrap: wrap;
                 justify-content: center;
             }
         }
@@ -317,7 +295,7 @@
         <div class="header">
             <div class="logo">
                 <h1>管理系统</h1>
-                <p>高效的管理平台</p>
+                <p>预约管理与数据统计</p>
             </div>
             <nav>
                 <ul>
@@ -325,777 +303,335 @@
                     <li><a href="emergency.html">急诊咨询</a></li>
                     <li><a href="followup.html">复诊预约</a></li>
                     <li><a href="admin.html" class="active">管理系统</a></li>
+                    <li><button id="loginLogoutBtn" class="login-btn">登录</button></li>
                 </ul>
             </nav>
         </div>
-        <div class="admin-container" id="adminContent">
-            <h2>预约管理系统</h2>
-            <div id="noPermissionMessage" style="display: none; text-align: center; padding: 50px 20px;">
-                <div style="font-size: 72px; margin-bottom: 20px;">🔒</div>
-                <h3 style="color: #4a5568; margin-bottom: 10px; font-size: 24px;">暂无权限查看</h3>
-                <p style="color: #718096;">请先登录后再访问此页面</p>
-                <button onclick="handleLoginLogout()" style="
-                    margin-top: 20px;
-                    padding: 10px 20px;
-                    background: linear-gradient(135deg, #84fab0, #8fd3f4);
-                    color: white;
-                    border: none;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-size: 16px;
-                    transition: all 0.3s ease;
-                ">登录</button>
+
+        <div class="admin-container">
+            <div id="adminLogin" class="admin-login">
+                <h3>管理员登录</h3>
+                <p>请登录以访问管理系统</p>
             </div>
-            
-            <div id="adminPanel" style="display: none;">
-                <div class="function-buttons">
-                    <a href="followup.html" class="function-button followup">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                            <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
-                        复诊时间管理
-                    </a>
-                    <button class="function-button clear" onclick="clearAllAppointments()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                        清除所有记录
-                    </button>
-                </div>
 
-                <div class="filters">
-                    <div class="filter-group">
-                        <label for="date-filter">日期筛选</label>
-                        <input type="date" id="date-filter">
+            <div id="adminContent" class="admin-content">
+                <h2>预约管理系统</h2>
+                
+                <div class="search-section">
+                    <div class="search-form">
+                        <div class="form-group">
+                            <input type="text" 
+                                   id="searchInput" 
+                                   placeholder="搜索患者姓名或科室...">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" 
+                                   id="dateFilter">
+                        </div>
                     </div>
-                    <div class="filter-group">
-                        <label for="department-filter">科室筛选</label>
-                        <select id="department-filter">
-                            <option value="">请选择科室</option>
-                            <option value="内科">内科</option>
-                            <option value="外科">外科</option>
-                            <option value="妇产科">妇产科</option>
-                            <option value="脑科">脑科</option>
-                            <option value="骨科">骨科</option>
-                            <option value="心脏科">心脏科</option>
-                            <option value="精神科">精神科</option>
-                            <option value="皮肤科">皮肤科</option>
-                            <option value="神经科">神经科</option>
-                            <option value="眼科">眼科</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label for="status-filter">状态筛选</label>
-                        <select id="status-filter">
-                            <option value="">全部状态</option>
-                            <option value="pending">待确认</option>
-                            <option value="confirmed">已确认</option>
-                            <option value="completed">已完成</option>
-                            <option value="cancelled">已取消</option>
-                        </select>
+                    <div class="status-filter">
+                        <button class="status-btn active" data-status="all">全部</button>
+                        <button class="status-btn" data-status="pending">待处理</button>
+                        <button class="status-btn" data-status="approved">已通过</button>
+                        <button class="status-btn" data-status="rejected">已拒绝</button>
+                        <button class="status-btn" data-status="emergency">紧急预约</button>
                     </div>
                 </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>预约日期</th>
-                            <th>预约时间</th>
-                            <th>患者姓名</th>
-                            <th>联系电话</th>
-                            <th>就诊科室</th>
-                            <th>身份证号</th>
-                            <th>状态</th>
-                            <th>操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2024-03-20</td>
-                            <td>09:30</td>
-                            <td>${appointment.isEmergency ? 
-                                `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
-                                appointment.name}</td>
-                            <td>${appointment.phone}</td>
-                            <td>${appointment.department}</td>
-                            <td>${appointment.idCard}</td>
-                            <td><span class="status-pending">待确认</span></td>
-                            <td class="actions">
-                                <button class="btn btn-confirm">确认</button>
-                                <button class="btn btn-cancel">取消</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>2024-03-20</td>
-                            <td>10:00</td>
-                            <td>李四</td>
-                            <td>0187654321</td>
-                            <td>外科</td>
-                            <td>987654321</td>
-                            <td><span class="status-confirmed">已确认</span></td>
-                            <td class="actions">
-                                <button class="btn btn-cancel">取消</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                
+                <div class="appointment-list" id="appointmentList">
+                    <!-- 预约记录将在这里动态显示 -->
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script>
         // Firebase 配置
         const firebaseConfig = {
-            apiKey: "AIzaSyBrsrBuGb8lMq74KBVh_TeTI2jLIkbWArI",
+            apiKey: "AIzaSyC1DSe4UMv4hQo9zQB62XmPLFxT4vQJ5H0",
             authDomain: "drhee-d5eb1.firebaseapp.com",
+            databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "drhee-d5eb1",
-            storageBucket: "drhee-d5eb1.firebasestorage.app",
-            messagingSenderId: "859425424440",
-            appId: "1:859425424440:web:813bf5768a21a1b5f012cd",
-            measurementId: "G-W20SSBNDKY",
-            databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app"
+            storageBucket: "drhee-d5eb1.appspot.com",
+            messagingSenderId: "967372296466",
+            appId: "1:967372296466:web:b37f5c46c60e10dd0e9bf3"
         };
         
         // 初始化 Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-    </script>
 
-    <script>
-        // 加载预约数据
-        function loadAppointments() {
-            database.ref('appointments').on('value', snapshot => {
-                const tbody = document.querySelector('tbody');
-                tbody.innerHTML = ''; // 清空现有内容
-                
-                snapshot.forEach(childSnapshot => {
-                    const appointment = childSnapshot.val();
-                    const appointmentId = childSnapshot.key;
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${appointment.date}</td>
-                        <td>${appointment.time}</td>
-                        <td>${appointment.isEmergency ? 
-                            `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
-                            appointment.name}</td>
-                        <td>${appointment.phone}</td>
-                        <td>${appointment.department}</td>
-                        <td>${appointment.idCard}</td>
-                        <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
-                        <td class="actions">
-                            ${appointment.status === 'pending' ? 
-                                `<button class="btn btn-confirm" onclick="updateStatus('${appointmentId}', 'confirmed')">确认</button>` : ''}
-                            ${appointment.status === 'confirmed' ? 
-                                `<button class="btn btn-complete" onclick="updateStatus('${appointmentId}', 'completed')">已完成</button>` : ''}
-                            ${appointment.status !== 'cancelled' && appointment.status !== 'completed' ? 
-                                `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
-                            <button class="btn btn-delete" onclick="deleteAppointment('${appointmentId}')" style="background: #f56565; color: white;">删除</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            });
-        }
-        
-        // 获取状态文本
-        function getStatusText(status) {
-            const statusMap = {
-                pending: '待确认',
-                confirmed: '已确认',
-                cancelled: '已取消',
-                completed: '已完成'
-            };
-            return statusMap[status] || status;
-        }
-        
-        // 更新预约状态
-        function updateStatus(id, newStatus) {
-            if (newStatus === 'completed') {
-                // 创建确认对话框
-                const confirmModal = document.createElement('div');
-                confirmModal.className = 'confirm-modal';
-                confirmModal.innerHTML = `
-                    <div class="confirm-content">
-                        <div class="confirm-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                <polyline points="22 4 12 14.01 9 11.01"/>
-                            </svg>
-                        </div>
-                        <div class="confirm-title">确认完成预约？</div>
-                        <div class="confirm-message">请确认该预约已经完成就诊</div>
-                        <div class="confirm-buttons">
-                            <button class="confirm-yes">确认完成</button>
-                            <button class="confirm-no">取消</button>
-                        </div>
-                    </div>
-                `;
-                
-                // 添加样式
-                const style = document.createElement('style');
-                style.textContent = `
-                    .confirm-modal {
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        right: 0;
-                        bottom: 0;
-                        background: rgba(0, 0, 0, 0.5);
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        z-index: 1000;
-                        animation: fadeIn 0.3s ease;
-                    }
-                    
-                    .confirm-content {
-                        background: white;
-                        padding: 30px;
-                        border-radius: 12px;
-                        text-align: center;
-                        max-width: 400px;
-                        width: 90%;
-                        animation: slideIn 0.3s ease;
-                    }
-                    
-                    .confirm-icon {
-                        width: 60px;
-                        height: 60px;
-                        background: #90cdf4;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        margin: 0 auto 20px;
-                    }
-                    
-                    .confirm-icon svg {
-                        width: 30px;
-                        height: 30px;
-                        stroke: white;
-                    }
-                    
-                    .confirm-title {
-                        font-size: 1.25rem;
-                        font-weight: 600;
-                        color: #2d3748;
-                        margin-bottom: 10px;
-                    }
-                    
-                    .confirm-message {
-                        color: #718096;
-                        margin-bottom: 20px;
-                    }
-                    
-                    .confirm-buttons {
-                        display: flex;
-                        gap: 10px;
-                        justify-content: center;
-                    }
-                    
-                    .confirm-yes {
-                        background: #90cdf4;
-                        color: white;
-                        padding: 8px 20px;
-                        border: none;
-                        border-radius: 6px;
-                        cursor: pointer;
-                        font-weight: 500;
-                        transition: all 0.3s;
-                    }
-                    
-                    .confirm-no {
-                        background: #e2e8f0;
-                        color: #4a5568;
-                        padding: 8px 20px;
-                        border: none;
-                        border-radius: 6px;
-                        cursor: pointer;
-                        font-weight: 500;
-                        transition: all 0.3s;
-                    }
-                    
-                    .confirm-yes:hover, .confirm-no:hover {
-                        transform: translateY(-1px);
-                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                    }
-                    
-                    @keyframes fadeIn {
-                        from { opacity: 0; }
-                        to { opacity: 1; }
-                    }
-                    
-                    @keyframes slideIn {
-                        from {
-                            transform: translateY(-20px);
-                            opacity: 0;
-                        }
-                        to {
-                            transform: translateY(0);
-                            opacity: 1;
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                // 添加到页面
-                document.body.appendChild(confirmModal);
-                
-                // 添加事件监听
-                const yesBtn = confirmModal.querySelector('.confirm-yes');
-                const noBtn = confirmModal.querySelector('.confirm-no');
-                
-                yesBtn.addEventListener('click', () => {
-                    // 更新状态
-                    database.ref(`appointments/${id}`).update({
-                        status: newStatus
-                    }).then(() => {
-                        // 显示成功提示
-                        showStatusUpdateSuccess('已完成');
-                    });
-                    confirmModal.remove();
-                });
-                
-                noBtn.addEventListener('click', () => {
-                    confirmModal.remove();
-                });
-                
-                // 点击背景关闭
-                confirmModal.addEventListener('click', (e) => {
-                    if (e.target === confirmModal) {
-                        confirmModal.remove();
-                    }
-                });
-            } else {
-                // 直接更新其他状态
-                database.ref(`appointments/${id}`).update({
-                    status: newStatus
-                });
-            }
-        }
-
-        // 添加状态更新成功提示
-        function showStatusUpdateSuccess(status) {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon" style="background: #90cdf4;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                </div>
-                <div class="success-title">状态已更新</div>
-                <div class="success-message">预约已标记为${status}</div>
-            `;
-            
-            // 移除已存在的提示框
-            const existingAlert = document.querySelector('.success-alert');
-            if (existingAlert) {
-                existingAlert.remove();
-            }
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 300);
-            }, 2000);
-        }
-        
-        // 筛选功能
-        const dateFilter = document.getElementById('date-filter');
-        const departmentFilter = document.getElementById('department-filter');
-        const statusFilter = document.getElementById('status-filter');
-
-        function applyFilters() {
-            const date = dateFilter.value;
-            const department = departmentFilter.value;
-            const status = statusFilter.value;
-            
-            database.ref('appointments').orderByChild('date').on('value', snapshot => {
-                const tbody = document.querySelector('tbody');
-                tbody.innerHTML = '';
-                
-                snapshot.forEach(childSnapshot => {
-                    const appointment = childSnapshot.val();
-                    const appointmentId = childSnapshot.key;
-                    
-                    // 应用筛选
-                    if (date && appointment.date !== date) return;
-                    if (department && appointment.department !== department) return;
-                    if (status && appointment.status !== status) return;
-                    
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${appointment.date}</td>
-                        <td>${appointment.time}</td>
-                        <td>${appointment.isEmergency ? 
-                            `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
-                            appointment.name}</td>
-                        <td>${appointment.phone}</td>
-                        <td>${appointment.department}</td>
-                        <td>${appointment.idCard}</td>
-                        <td><span class="status-${appointment.status}">${getStatusText(appointment.status)}</span></td>
-                        <td class="actions">
-                            ${appointment.status === 'pending' ? 
-                                `<button class="btn btn-confirm" onclick="updateStatus('${appointmentId}', 'confirmed')">确认</button>` : ''}
-                            ${appointment.status === 'confirmed' ? 
-                                `<button class="btn btn-complete" onclick="updateStatus('${appointmentId}', 'completed')">已完成</button>` : ''}
-                            ${appointment.status !== 'cancelled' && appointment.status !== 'completed' ? 
-                                `<button class="btn btn-cancel" onclick="updateStatus('${appointmentId}', 'cancelled')">取消</button>` : ''}
-                            <button class="btn btn-delete" onclick="deleteAppointment('${appointmentId}')" style="background: #f56565; color: white;">删除</button>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            });
-        }
-
-        // 添加筛选事件监听
-        [dateFilter, departmentFilter, statusFilter].forEach(filter => {
-            filter.addEventListener('change', applyFilters);
-        });
-
-        // 页面加载时显示预约列表
-        loadAppointments();
-
-        // 修改权限检查函数
-        function checkPermission() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const adminName = localStorage.getItem('adminName');
-            const noPermissionMessage = document.getElementById('noPermissionMessage');
-            const adminPanel = document.getElementById('adminPanel');
-            
-            if (!isLoggedIn || !adminName) {
-                // 显示无权限提示
-                if (noPermissionMessage) noPermissionMessage.style.display = 'block';
-                if (adminPanel) adminPanel.style.display = 'none';
-                return;
-            }
-            
-            // 显示管理面板
-            if (noPermissionMessage) noPermissionMessage.style.display = 'none';
-            if (adminPanel) adminPanel.style.display = 'block';
-            
-            // ... 其余权限检查逻辑 ...
-        }
-        
-        // 修改更新状态按钮的函数
-        function updateStatusButton(button, isOpen) {
-            button.innerHTML = isOpen ? '🟢 医院营业中' : '🔴 医院已关闭';
-            button.style.cssText = `
-                background: ${isOpen ? '#84fab0' : '#f56565'};
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 500;
-                transition: all 0.3s ease;
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-            `;
-        }
-        
-        // 修改切换营业状态的函数
-        function toggleHospitalStatus(button) {
-            database.ref('hospitalStatus').once('value', snapshot => {
-                const currentStatus = snapshot.val()?.isOpen ?? true;
-                const newStatus = !currentStatus;
-                
-                database.ref('hospitalStatus').set({
-                    isOpen: newStatus,
-                    lastUpdated: new Date().toISOString()
-                }).then(() => {
-                    updateStatusButton(button, newStatus);
-                    showStatusChangeSuccess(newStatus);
-                }).catch(error => {
-                    console.error('Error updating status:', error);
-                    alert('更新状态失败，请重试');
-                });
-            });
-        }
-        
-        // 添加状态更改成功提示
-        function showStatusChangeSuccess(isOpen) {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon" style="background: ${isOpen ? '#84fab0' : '#f56565'};">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M5 13l4 4L19 7"/>
-                    </svg>
-                </div>
-                <div class="success-title">状态已更新</div>
-                <div class="success-message">医院现在${isOpen ? '营业中' : '已关闭'}</div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 500);
-            }, 2000);
-        }
-        
-        // 修改删除单条记录的函数
-        function deleteAppointment(appointmentId) {
-            // 创建确认对话框
-            const confirmModal = document.createElement('div');
-            confirmModal.className = 'confirm-modal';
-            confirmModal.innerHTML = `
-                <div class="confirm-content" style="animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);">
-                    <div class="confirm-icon" style="background: #f56565; animation: pulseIcon 1s ease infinite;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </div>
-                    <div class="confirm-title" style="color: #f56565;">确认删除预约？</div>
-                    <div class="confirm-message">此操作不可恢复，请确认是否删除该预约记录</div>
-                    <div class="confirm-buttons">
-                        <button class="confirm-yes" style="background: #f56565; animation: shake 0.5s ease-in-out;">确认删除</button>
-                        <button class="confirm-no">取消</button>
-                    </div>
-                </div>
-            `;
-            
-            // 添加样式
-            const style = document.createElement('style');
-            style.textContent = `
-                .confirm-modal {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: rgba(0, 0, 0, 0.7);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 1000;
-                    animation: fadeIn 0.3s ease;
-                    backdrop-filter: blur(4px);
-                }
-                
-                .confirm-content {
-                    background: white;
-                    padding: 30px;
-                    border-radius: 16px;
-                    text-align: center;
-                    max-width: 400px;
-                    width: 90%;
-                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-                }
-                
-                .confirm-icon {
-                    width: 70px;
-                    height: 70px;
-                    background: #f56565;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    margin: 0 auto 20px;
-                    box-shadow: 0 0 0 rgba(245, 101, 101, 0.4);
-                }
-                
-                .confirm-icon svg {
-                    width: 35px;
-                    height: 35px;
-                    stroke: white;
-                }
-                
-                .confirm-title {
-                    font-size: 1.5rem;
-                    font-weight: 600;
-                    margin-bottom: 12px;
-                }
-                
-                .confirm-message {
-                    color: #718096;
-                    margin-bottom: 25px;
-                    line-height: 1.5;
-                }
-                
-                .confirm-buttons {
-                    display: flex;
-                    gap: 12px;
-                    justify-content: center;
-                }
-                
-                .confirm-yes, .confirm-no {
-                    padding: 10px 24px;
-                    border: none;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    font-size: 1rem;
-                    transition: all 0.3s ease;
-                }
-                
-                .confirm-yes {
-                    background: #f56565;
-                    color: white;
-                }
-                
-                .confirm-no {
-                    background: #e2e8f0;
-                    color: #4a5568;
-                }
-                
-                .confirm-yes:hover, .confirm-no:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                }
-                
-                @keyframes bounceIn {
-                    0% {
-                        transform: scale(0.3);
-                        opacity: 0;
-                    }
-                    50% {
-                        transform: scale(1.05);
-                    }
-                    70% {
-                        transform: scale(0.9);
-                    }
-                    100% {
-                        transform: scale(1);
-                        opacity: 1;
-                    }
-                }
-                
-                @keyframes pulseIcon {
-                    0% {
-                        box-shadow: 0 0 0 0 rgba(245, 101, 101, 0.4);
-                    }
-                    70% {
-                        box-shadow: 0 0 0 15px rgba(245, 101, 101, 0);
-                    }
-                    100% {
-                        box-shadow: 0 0 0 0 rgba(245, 101, 101, 0);
-                    }
-                }
-                
-                @keyframes shake {
-                    0%, 100% { transform: translateX(0); }
-                    25% { transform: translateX(-5px); }
-                    75% { transform: translateX(5px); }
-                }
-            `;
-            document.head.appendChild(style);
-            
-            // 添加到页面
-            document.body.appendChild(confirmModal);
-            
-            // 添加事件监听
-            const yesBtn = confirmModal.querySelector('.confirm-yes');
-            const noBtn = confirmModal.querySelector('.confirm-no');
-            
-            yesBtn.addEventListener('click', () => {
-                // 删除记录
-                database.ref(`appointments/${appointmentId}`).remove()
-                    .then(() => {
-                        showDeleteSuccess();
-                    })
-                    .catch(error => {
-                        alert('删除失败：' + error.message);
-                    });
-                confirmModal.remove();
-            });
-            
-            noBtn.addEventListener('click', () => {
-                confirmModal.remove();
-            });
-            
-            // 点击背景关闭
-            confirmModal.addEventListener('click', (e) => {
-                if (e.target === confirmModal) {
-                    confirmModal.remove();
-                }
-            });
-            
-            // 按ESC关闭
-            const escHandler = (e) => {
-                if (e.key === 'Escape') {
-                    confirmModal.remove();
-                    document.removeEventListener('keydown', escHandler);
-                }
-            };
-            document.addEventListener('keydown', escHandler);
-        }
-        
-        // 添加删除成功提示
-        function showDeleteSuccess() {
-            const successDiv = document.createElement('div');
-            successDiv.className = 'success-alert';
-            
-            successDiv.innerHTML = `
-                <div class="success-icon" style="background: #f56565;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                    </svg>
-                </div>
-                <div class="success-title">删除成功</div>
-                <div class="success-message">预约记录已删除</div>
-            `;
-            
-            document.body.appendChild(successDiv);
-            
-            setTimeout(() => {
-                successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                setTimeout(() => successDiv.remove(), 500);
-            }, 2000);
-        }
-        
-        // 页面加载时检查权限
-        window.addEventListener('load', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            if (!isLoggedIn) {
-                window.location.href = 'index.html';
-                return;
-            }
-            checkPermission();
-        });
-
-        // 保存登录状态的函数
-        function saveLoginState() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const adminName = localStorage.getItem('adminName');
-            
-            if (isLoggedIn && adminName) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('adminName', adminName);
-            }
-        }
-
-        // 检查登录状态并重定向
+        // 检查登录状态
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const adminName = localStorage.getItem('adminName');
-            
-            if (!isLoggedIn || !adminName) {
-                window.location.href = 'index.html';
-                return;
-            }
-            
             const loginLogoutBtn = document.getElementById('loginLogoutBtn');
-            if (loginLogoutBtn) {
+            const adminLogin = document.getElementById('adminLogin');
+            const adminContent = document.getElementById('adminContent');
+            
+            if (isLoggedIn && adminName) {
                 loginLogoutBtn.textContent = '退出';
+                adminLogin.style.display = 'none';
+                adminContent.style.display = 'block';
+                loadAppointments();
+            } else {
+                loginLogoutBtn.textContent = '登录';
+                adminLogin.style.display = 'block';
+                adminContent.style.display = 'none';
             }
         }
 
-        // 页面加载时检查登录状态
+        // 处理登录/登出
+        function handleLoginLogout(e) {
+            if (e) e.preventDefault();
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('adminName');
+                checkLoginStatus();
+                showLogoutSuccess();
+            } else {
+                const modal = document.createElement('div');
+                modal.className = 'login-modal';
+                
+                modal.innerHTML = `
+                    <div class="login-content">
+                        <div class="login-title">
+                            <span>👨‍⚕️</span>
+                            管理员登录
+                        </div>
+                        <input type="text" 
+                               class="login-input" 
+                               placeholder="请输入用户名"
+                               id="username-input">
+                        <input type="password" 
+                               class="login-input" 
+                               placeholder="请输入密码"
+                               id="password-input">
+                        <div class="login-buttons">
+                            <button class="login-submit">登录</button>
+                            <button class="login-cancel">取消</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                const usernameInput = modal.querySelector('#username-input');
+                const passwordInput = modal.querySelector('#password-input');
+                const submitBtn = modal.querySelector('.login-submit');
+                const cancelBtn = modal.querySelector('.login-cancel');
+                
+                submitBtn.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if ((username === 'Hayden' && password === 'Hayden0320') || 
+                        (username === 'Howard' && password === 'Howard2009')) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('adminName', username);
+                        modal.remove();
+                        checkLoginStatus();
+                        showLoginSuccess();
+                    } else {
+                        showLoginError();
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', () => modal.remove());
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            }
+        }
+
+        // 加载预约记录
+        function loadAppointments() {
+            const appointmentList = document.getElementById('appointmentList');
+            const searchInput = document.getElementById('searchInput');
+            const dateFilter = document.getElementById('dateFilter');
+            const activeStatusBtn = document.querySelector('.status-btn.active');
+            const selectedStatus = activeStatusBtn ? activeStatusBtn.dataset.status : 'all';
+            
+            database.ref('appointments').on('value', snapshot => {
+                let appointments = [];
+                
+                snapshot.forEach(childSnapshot => {
+                    const appointment = childSnapshot.val();
+                    appointment.id = childSnapshot.key;
+                    appointments.push(appointment);
+                });
+                
+                // 根据创建时间排序
+                appointments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                // 应用过滤
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedDate = dateFilter.value;
+                
+                appointments = appointments.filter(appointment => {
+                    const matchesSearch = 
+                        appointment.name.toLowerCase().includes(searchTerm) ||
+                        appointment.department.toLowerCase().includes(searchTerm);
+                    
+                    const matchesDate = !selectedDate || appointment.date === selectedDate;
+                    
+                    const matchesStatus = 
+                        selectedStatus === 'all' || 
+                        (selectedStatus === 'emergency' && appointment.isEmergency) ||
+                        appointment.status === selectedStatus;
+                    
+                    return matchesSearch && matchesDate && matchesStatus;
+                });
+                
+                // 更新显示
+                appointmentList.innerHTML = '';
+                
+                if (appointments.length === 0) {
+                    const emptyMessage = document.createElement('div');
+                    emptyMessage.style.textAlign = 'center';
+                    emptyMessage.style.color = '#718096';
+                    emptyMessage.style.padding = '20px';
+                    emptyMessage.innerHTML = '暂无预约记录';
+                    appointmentList.appendChild(emptyMessage);
+                    return;
+                }
+                
+                appointments.forEach(appointment => {
+                    const div = document.createElement('div');
+                    div.className = 'appointment-item';
+                    div.innerHTML = `
+                        <div class="patient-info">
+                            <div class="patient-name">
+                                ${appointment.name}
+                                ${appointment.isEmergency ? ' ⚡' : ''}
+                            </div>
+                            <div class="appointment-details">
+                                预约时间：${formatDate(appointment.date)} ${appointment.time}
+                                <br>
+                                科室：${appointment.department}
+                                <br>
+                                状态：${getStatusText(appointment.status)}
+                                <br>
+                                联系电话：${appointment.phone}
+                                ${appointment.idCard ? `<br>身份证号：${appointment.idCard}` : ''}
+                            </div>
+                        </div>
+                        ${appointment.status === 'pending' ? `
+                            <div class="actions">
+                                <button class="btn btn-approve" onclick="handleAppointment('${appointment.id}', 'approved')">通过</button>
+                                <button class="btn btn-reject" onclick="handleAppointment('${appointment.id}', 'rejected')">拒绝</button>
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    appointmentList.appendChild(div);
+                });
+            });
+        }
+
+        // 处理预约状态
+        function handleAppointment(appointmentId, status) {
+            database.ref(`appointments/${appointmentId}`).update({
+                status: status,
+                updatedAt: new Date().toISOString(),
+                updatedBy: localStorage.getItem('adminName')
+            })
+            .then(() => {
+                showSuccess(`预约${status === 'approved' ? '已通过' : '已拒绝'}`);
+            })
+            .catch(error => {
+                showError('操作失败：' + error.message);
+            });
+        }
+
+        // 格式化日期显示
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+
+        // 获取状态文本
+        function getStatusText(status) {
+            switch (status) {
+                case 'pending':
+                    return '待处理';
+                case 'approved':
+                    return '已通过';
+                case 'rejected':
+                    return '已拒绝';
+                default:
+                    return status;
+            }
+        }
+
+        // 显示成功提示
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            successDiv.innerHTML = `
+                <div style="color: #2f855a; font-weight: 600;">${message}</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 2000);
+        }
+
+        // 显示登录成功
+        function showLoginSuccess() {
+            showSuccess(`登录成功！欢迎回来，${localStorage.getItem('adminName')}`);
+        }
+
+        // 显示登出成功
+        function showLogoutSuccess() {
+            showSuccess('已成功退出登录');
+        }
+
+        // 显示登录错误
+        function showLoginError() {
+            showSuccess('用户名或密码错误');
+        }
+
+        // 显示错误提示
+        function showError(message) {
+            showSuccess(message);
+        }
+
+        // 添加事件监听
+        document.getElementById('loginLogoutBtn').addEventListener('click', handleLoginLogout);
+        document.getElementById('searchInput').addEventListener('input', loadAppointments);
+        document.getElementById('dateFilter').addEventListener('change', loadAppointments);
+        
+        // 状态过滤按钮事件
+        document.querySelectorAll('.status-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadAppointments();
+            });
+        });
+        
+        // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             checkLoginStatus();
+            
+            // 设置日期选择器的范围
+            const dateFilter = document.getElementById('dateFilter');
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setMonth(today.getMonth() + 3); // 最多显示3个月内的记录
+            
+            dateFilter.min = today.toISOString().split('T')[0];
+            dateFilter.max = maxDate.toISOString().split('T')[0];
         });
     </script>
 </body>

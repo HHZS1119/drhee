@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dr. Hee's Clinic</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -51,6 +53,7 @@
             margin: 0;
             display: flex;
             gap: 20px;
+            align-items: center;
         }
 
         nav a {
@@ -69,6 +72,22 @@
         nav a.active {
             background: linear-gradient(135deg, #84fab0, #8fd3f4);
             color: white;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .content {
@@ -101,6 +120,7 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-top: 40px;
+            margin-bottom: 40px;
         }
 
         .feature-card {
@@ -134,6 +154,151 @@
             line-height: 1.5;
         }
 
+        .appointment-form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #84fab0;
+            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.1);
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .success-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px 30px;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translate(-50%, -100%);
+                opacity: 0;
+            }
+            to {
+                transform: translate(-50%, 0);
+                opacity: 1;
+            }
+        }
+
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .login-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .login-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .login-submit {
+            background: linear-gradient(135deg, #84fab0, #8fd3f4);
+            color: white;
+        }
+
+        .login-cancel {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
         @media (max-width: 768px) {
             .header {
                 flex-direction: column;
@@ -153,6 +318,19 @@
             .features {
                 grid-template-columns: 1fr;
             }
+
+            .appointment-form {
+                padding: 20px;
+            }
+        }
+
+        .form-group input[type="date"],
+        .form-group input[type="time"] {
+            width: 200px;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -169,6 +347,7 @@
                     <li><a href="emergency.html">急诊咨询</a></li>
                     <li><a href="followup.html">复诊预约</a></li>
                     <li><a href="admin.html">管理系统</a></li>
+                    <li><button id="loginLogoutBtn" class="login-btn">登录</button></li>
                 </ul>
             </nav>
         </div>
@@ -212,7 +391,218 @@
                     </div>
                 </div>
             </div>
+
+            <div class="appointment-form">
+                <h3 style="text-align: center; margin-bottom: 20px; color: #2d3748;">在线预约</h3>
+                <form id="appointmentForm" onsubmit="handleAppointmentSubmit(event)">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">联系电话</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">就诊科室</label>
+                        <select id="department" required>
+                            <option value="">请选择科室</option>
+                            <option value="内科">内科</option>
+                            <option value="外科">外科</option>
+                            <option value="妇产科">妇产科</option>
+                            <option value="脑科">脑科</option>
+                            <option value="骨科">骨科</option>
+                            <option value="心脏科">心脏科</option>
+                            <option value="精神科">精神科</option>
+                            <option value="皮肤科">皮肤科</option>
+                            <option value="神经科">神经科</option>
+                            <option value="眼科">眼科</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="appointmentDate">预约日期</label>
+                        <input type="date" id="appointmentDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">预约时间</label>
+                        <input type="time" id="time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idCard">身份证号</label>
+                        <input type="text" id="idCard" required>
+                    </div>
+                    <button type="submit" class="submit-btn">提交预约</button>
+                </form>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Firebase 配置
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1DSe4UMv4hQo9zQB62XmPLFxT4vQJ5H0",
+            authDomain: "drhee-d5eb1.firebaseapp.com",
+            databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "drhee-d5eb1",
+            storageBucket: "drhee-d5eb1.appspot.com",
+            messagingSenderId: "967372296466",
+            appId: "1:967372296466:web:b37f5c46c60e10dd0e9bf3"
+        };
+        
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // 检查登录状态
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const adminName = localStorage.getItem('adminName');
+            const loginLogoutBtn = document.getElementById('loginLogoutBtn');
+            
+            if (isLoggedIn && adminName) {
+                loginLogoutBtn.textContent = '退出';
+            } else {
+                loginLogoutBtn.textContent = '登录';
+            }
+        }
+
+        // 处理登录/登出
+        function handleLoginLogout(e) {
+            if (e) e.preventDefault();
+            
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('adminName');
+                checkLoginStatus();
+                showLogoutSuccess();
+            } else {
+                const modal = document.createElement('div');
+                modal.className = 'login-modal';
+                
+                modal.innerHTML = `
+                    <div class="login-content">
+                        <div class="login-title">
+                            <span>👨‍⚕️</span>
+                            管理员登录
+                        </div>
+                        <input type="text" 
+                               class="login-input" 
+                               placeholder="请输入用户名"
+                               id="username-input">
+                        <input type="password" 
+                               class="login-input" 
+                               placeholder="请输入密码"
+                               id="password-input">
+                        <div class="login-buttons">
+                            <button class="login-submit">登录</button>
+                            <button class="login-cancel">取消</button>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                const usernameInput = modal.querySelector('#username-input');
+                const passwordInput = modal.querySelector('#password-input');
+                const submitBtn = modal.querySelector('.login-submit');
+                const cancelBtn = modal.querySelector('.login-cancel');
+                
+                submitBtn.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const password = passwordInput.value.trim();
+                    
+                    if ((username === 'Hayden' && password === 'Hayden0320') || 
+                        (username === 'Howard' && password === 'Howard2009')) {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        localStorage.setItem('adminName', username);
+                        modal.remove();
+                        checkLoginStatus();
+                        showLoginSuccess();
+                    } else {
+                        showLoginError();
+                    }
+                });
+                
+                cancelBtn.addEventListener('click', () => modal.remove());
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+            }
+        }
+
+        // 处理预约提交
+        function handleAppointmentSubmit(event) {
+            event.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                department: document.getElementById('department').value,
+                date: document.getElementById('appointmentDate').value,
+                time: document.getElementById('time').value,
+                idCard: document.getElementById('idCard').value,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+            
+            database.ref('appointments').push(formData)
+                .then(() => {
+                    showAppointmentSuccess();
+                    document.getElementById('appointmentForm').reset();
+                })
+                .catch((error) => {
+                    showError('预约提交失败，请稍后重试');
+                });
+        }
+
+        // 显示成功提示
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-alert';
+            successDiv.innerHTML = `
+                <div style="color: #2f855a; font-weight: 600;">${message}</div>
+            `;
+            
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.style.opacity = '0';
+                setTimeout(() => successDiv.remove(), 300);
+            }, 2000);
+        }
+
+        // 显示登录成功
+        function showLoginSuccess() {
+            showSuccess(`登录成功！欢迎回来，${localStorage.getItem('adminName')}`);
+        }
+
+        // 显示登出成功
+        function showLogoutSuccess() {
+            showSuccess('已成功退出登录');
+        }
+
+        // 显示登录错误
+        function showLoginError() {
+            showSuccess('用户名或密码错误');
+        }
+
+        // 显示预约成功
+        function showAppointmentSuccess() {
+            showSuccess('预约提交成功！');
+        }
+
+        // 显示错误提示
+        function showError(message) {
+            showSuccess(message);
+        }
+
+        // 添加事件监听
+        document.getElementById('loginLogoutBtn').addEventListener('click', handleLoginLogout);
+        
+        // 页面加载时检查登录状态
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+    </script>
 </body>
 </html> 
