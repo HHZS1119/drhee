@@ -869,341 +869,73 @@
     </script>
 </head>
 <body>
-    <div class="wave-container">
-        <div class="wave"></div>
-        <div class="wave"></div>
-        <div class="wave"></div>
-    </div>
-    <div class="glow"></div>
-    
-    <div class="navbar">
-        <div class="navbar-left">
-            <a href="#" onclick="showAppointmentForm()">预约挂号</a>
-            <a href="emergency.html">紧急会诊</a>
-        </div>
-        <div class="navbar-right">
-            <a href="followup.html" class="followup-link">复诊时间查询</a>
-            <a href="admin.html" class="admin-link" id="adminLink" style="display: none;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="3" y1="9" x2="21" y2="9"></line>
-                    <line x1="9" y1="21" x2="9" y2="9"></line>
-                </svg>
-                后台管理
-            </a>
-            <a href="#" onclick="handleLoginLogout()" id="loginLogoutBtn">登录</a>
-        </div>
-    </div>
-
-    <div class="doctor-title">
-        <h1>National Medical Hospital Center (Miri)</h1>
-        <h2 style="color: white; margin-top: 1rem; font-size: 1.8rem;">DR. HEE ZHI SHANG</h2>
-    </div>
-
-    <div class="hospital-features">
-        <div class="feature-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-            </svg>
-            <h3>专业医疗团队</h3>
-            <p>资深专家坐诊，提供优质诊疗服务</p>
-        </div>
-        <div class="feature-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <h3>便捷预约</h3>
-            <p>在线预约，省时省力</p>
-        </div>
-        <div class="feature-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-            </svg>
-            <h3>以患者为中心</h3>
-            <p>优质服务，温馨就医体验</p>
-        </div>
-        <div class="feature-item">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-                <line x1="8" y1="21" x2="16" y2="21"></line>
-                <line x1="12" y1="17" x2="12" y2="21"></line>
-            </svg>
-            <h3>先进设备</h3>
-            <p>配备现代化医疗设备，保障诊疗质量</p>
-        </div>
-    </div>
-
-    <style>
-        .hospital-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 1200px;
-        }
-
-        .feature-item {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 1.5rem;
-            border-radius: 12px;
+    <div style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    ">
+        <div style="
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .feature-item svg {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 1rem;
-            color: #1976d2;
-        }
-
-        .feature-item h3 {
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-            font-size: 1.2rem;
-        }
-
-        .feature-item p {
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        @media (max-width: 768px) {
-            .hospital-features {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .hospital-features {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-
-    <div class="appointment-container">
-        <h2>在线预约</h2>
-        <form id="appointmentForm" onsubmit="handleAppointmentSubmit(event)">
-            <div class="form-group">
-                <label for="name">姓名：</label>
-                <input type="text" id="name" name="name" required placeholder=" ">
-                <div class="error-message">请输入姓名</div>
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            width: 500px;
+        ">
+            <div style="font-size: 72px; margin-bottom: 20px;">🔧</div>
+            <h2 style="
+                color: #2d3748;
+                font-size: 24px;
+                margin-bottom: 15px;
+            ">暂无权限查看</h2>
+            <p style="
+                color: #718096;
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            ">系统正在维护升级中，我们正在努力修复。<br>给您带来不便深表歉意。</p>
+            <div style="
+                width: 100%;
+                height: 4px;
+                background: linear-gradient(90deg, #84fab0, #8fd3f4);
+                border-radius: 2px;
+                margin: 20px 0;
+                position: relative;
+                overflow: hidden;
+            ">
+                <div style="
+                    position: absolute;
+                    width: 50%;
+                    height: 100%;
+                    background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.3));
+                    animation: loading 1.5s infinite;
+                "></div>
             </div>
-
-            <div class="form-group">
-                <label for="phone">联系电话：</label>
-                <input type="tel" 
-                       id="phone" 
-                       name="phone" 
-                       pattern="^(01)[0-9]{8,9}$"
-                       placeholder="例如：0123456789"
-                       maxlength="11"
-                       required
-                >
-                <small style="color: #718096; display: block; margin-top: 5px;">
-                    请输入马来西亚手机号码（以01开头，共10-11位）
-                </small>
-                <div class="error-message">请输入有效的马来西亚手机号码</div>
-            </div>
-
-            <div class="form-group">
-                <label for="department">就诊科室：</label>
-                <select id="department" name="department" required>
-                    <option value="">请选择科室</option>
-                    <option value="内科">内科</option>
-                    <option value="外科">外科</option>
-                    <option value="妇产科">妇产科</option>
-                    <option value="脑科">脑科</option>
-                    <option value="骨科">骨科</option>
-                    <option value="心脏科">心脏科</option>
-                    <option value="精神科">精神科</option>
-                    <option value="皮肤科">皮肤科</option>
-                    <option value="神经科">神经科</option>
-                    <option value="眼科">眼科</option>
-                </select>
-                <div class="error-message">请选择就诊科室</div>
-            </div>
-
-            <div class="form-group">
-                <label for="appointmentDate">预约日期：</label>
-                <input type="date" 
-                       id="appointmentDate" 
-                       name="appointmentDate" 
-                       required
-                       min=""
-                       max=""
-                       style="cursor: pointer;"
-                       onclick="this.showPicker()"
-                >
-                <script>
-                    // 设置日期范围和格式化显示
-                    const dateInput = document.getElementById('appointmentDate');
-                    const today = new Date();
-                    const maxDate = new Date();
-                    maxDate.setMonth(today.getMonth() + 1);
-                    
-                    // 设置默认值为今天
-                    dateInput.value = today.toISOString().split('T')[0];
-                    dateInput.min = today.toISOString().split('T')[0];
-                    dateInput.max = maxDate.toISOString().split('T')[0];
-
-                    // 初始化显示当天日期
-                    const initialDate = new Date(dateInput.value);
-                    const initialDay = initialDate.getDate().toString().padStart(2, '0');
-                    const initialMonth = (initialDate.getMonth() + 1).toString().padStart(2, '0');
-                    const initialYear = initialDate.getFullYear();
-                    dateInput.setAttribute('data-date', `${initialDay}/${initialMonth}/${initialYear}`);
-
-                    // 格式化日期显示
-                    dateInput.addEventListener('change', function() {
-                        if (this.value) {
-                            const date = new Date(this.value);
-                            const day = date.getDate().toString().padStart(2, '0');
-                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                            const year = date.getFullYear();
-                            const formattedDate = `${day}/${month}/${year}`;
-                            this.setAttribute('data-date', formattedDate);
-                        }
-                    });
-                </script>
-                <style>
-                    input[type="date"] {
-                        position: relative;
-                        color: transparent;
-                        background: white;
-                        width: 150px;
-                        padding-right: 30px;
-                    }
-                    
-                    input[type="date"]::-webkit-calendar-picker-indicator {
-                        position: absolute;
-                        right: 10px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        cursor: pointer;
-                    }
-                    
-                    input[type="date"]::before {
-                        content: attr(data-date);
-                        position: absolute;
-                        left: 10px;
-                        top: 50%;
-                        transform: translateY(-50%);
-                        color: black;
-                        background: white;
-                        line-height: 1;
-                        height: 100%;
-                        width: calc(100% - 40px);
-                        display: flex;
-                        align-items: center;
-                        pointer-events: none;
-                        white-space: nowrap;
-                    }
-                </style>
-            </div>
-
-            <div class="form-group">
-                <label for="time">预约时间：</label>
-                <input type="time" 
-                       id="time" 
-                       name="time" 
-                       required
-                       style="cursor: pointer; width: 150px; padding-right: 30px;"
-                       onclick="this.showPicker()"
-                >
-                <div class="error-message">请选择预约时间</div>
-            </div>
-
-            <div class="form-group">
-                <label for="idCard">身份证号：</label>
-                <input type="text" 
-                       id="idCard" 
-                       name="idCard" 
-                       pattern="\d{6}-\d{2}-\d{4}"
-                       placeholder="例如：990101-01-1234"
-                       required>
-                <small style="color: #718096; display: block; margin-top: 5px;">
-                    请输入马来西亚身份证号码（格式：YYMMDD-SS-NNNN）
-                </small>
-                <div class="error-message">请输入有效的马来西亚身份证号码</div>
-            </div>
-
-            <div class="form-group">
-                <button type="submit">提交预约</button>
-            </div>
-        </form>
+        </div>
     </div>
 
     <style>
-        .hospital-info {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            padding: 2rem;
-            margin: 2rem auto;
-            max-width: 1200px;
-        }
-
-        .info-section {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            max-width: 400px;
-        }
-
-        .info-section h3 {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #2c3e50;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
-        }
-
-        .info-section svg {
-            color: #00b09b;
-        }
-
-        .info-section ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .info-section li {
-            color: #666;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .info-section li:last-child {
-            border-bottom: none;
-        }
-
-        @media (max-width: 768px) {
-            .hospital-info {
-                flex-direction: column;
-                align-items: center;
-                gap: 1.5rem;
+        @keyframes loading {
+            0% {
+                transform: translateX(-100%);
             }
-
-            .info-section {
-                width: 100%;
+            100% {
+                transform: translateX(200%);
             }
         }
     </style>
+
+    <!-- 隐藏原有内容 -->
+    <div style="display: none;">
+        <!-- 原有内容 -->
+    </div>
 </body>
 </html> 

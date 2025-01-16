@@ -465,6 +465,48 @@
                 height: 16px;
             }
         }
+
+        .search-section {
+            margin-bottom: 2rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .search-form input:focus {
+            outline: none;
+            border-color: #84fab0;
+            box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.1);
+        }
+        
+        .followup-item {
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid #84fab0;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -481,43 +523,79 @@
     </div>
     
     <div class="followup-container">
-        <h2>复诊时间管理</h2>
+        <h2>复诊时间查询</h2>
         
-        <div class="add-followup">
-            <div class="add-form">
+        <!-- 搜索区域 -->
+        <div class="search-section">
+            <div class="search-form">
                 <div class="form-group">
-                    <label for="patientName">患者姓名</label>
-                    <input type="text" id="patientName" required>
+                    <input type="text" 
+                           id="searchInput" 
+                           placeholder="搜索患者姓名或科室..."
+                           style="
+                               width: 100%;
+                               padding: 12px;
+                               border: 2px solid #e2e8f0;
+                               border-radius: 8px;
+                               font-size: 1rem;
+                               transition: all 0.3s ease;
+                           "
+                    >
                 </div>
                 <div class="form-group">
-                    <label for="followupDate">复诊日期</label>
-                    <input type="date" id="followupDate" required>
+                    <input type="date" 
+                           id="dateFilter" 
+                           style="
+                               width: 100%;
+                               padding: 12px;
+                               border: 2px solid #e2e8f0;
+                               border-radius: 8px;
+                               font-size: 1rem;
+                               transition: all 0.3s ease;
+                           "
+                    >
                 </div>
-                <div class="form-group">
-                    <label for="followupTime">复诊时间</label>
-                    <input type="time" id="followupTime" required>
+            </div>
+        </div>
+        
+        <!-- 管理员操作区域 -->
+        <div id="adminControls" style="display: none;">
+            <div class="add-followup">
+                <div class="add-form">
+                    <div class="form-group">
+                        <label for="patientName">患者姓名</label>
+                        <input type="text" id="patientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="followupDate">复诊日期</label>
+                        <input type="date" id="followupDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="followupTime">复诊时间</label>
+                        <input type="time" id="followupTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">就诊科室</label>
+                        <select id="department" required>
+                            <option value="">请选择科室</option>
+                            <option value="内科">内科</option>
+                            <option value="外科">外科</option>
+                            <option value="妇产科">妇产科</option>
+                            <option value="脑科">脑科</option>
+                            <option value="骨科">骨科</option>
+                            <option value="心脏科">心脏科</option>
+                            <option value="精神科">精神科</option>
+                            <option value="皮肤科">皮肤科</option>
+                            <option value="神经科">神经科</option>
+                            <option value="眼科">眼科</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">备注</label>
+                        <input type="text" id="notes" placeholder="可选">
+                    </div>
+                    <button class="btn btn-add" onclick="addFollowup()">添加复诊记录</button>
                 </div>
-                <div class="form-group">
-                    <label for="department">就诊科室</label>
-                    <select id="department" required>
-                        <option value="">请选择科室</option>
-                        <option value="内科">内科</option>
-                        <option value="外科">外科</option>
-                        <option value="妇产科">妇产科</option>
-                        <option value="脑科">脑科</option>
-                        <option value="骨科">骨科</option>
-                        <option value="心脏科">心脏科</option>
-                        <option value="精神科">精神科</option>
-                        <option value="皮肤科">皮肤科</option>
-                        <option value="神经科">神经科</option>
-                        <option value="眼科">眼科</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="notes">备注</label>
-                    <input type="text" id="notes" placeholder="可选">
-                </div>
-                <button class="btn btn-add" onclick="addFollowup()">添加复诊记录</button>
             </div>
         </div>
         
@@ -542,15 +620,15 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // 检查权限
+        // 修改检查权限函数
         function checkPermission() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const adminName = localStorage.getItem('adminName');
+            const adminControls = document.getElementById('adminControls');
             
-            // 隐藏添加表单和编辑/删除按钮
-            const addForm = document.querySelector('.add-followup');
-            if (addForm) {
-                addForm.style.display = isLoggedIn ? 'block' : 'none';
+            // 显示/隐藏管理员控制区域
+            if (adminControls) {
+                adminControls.style.display = isLoggedIn ? 'block' : 'none';
             }
         }
 
@@ -591,21 +669,56 @@
         function loadFollowups() {
             const followupList = document.getElementById('followupList');
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const searchInput = document.getElementById('searchInput');
+            const dateFilter = document.getElementById('dateFilter');
             
             database.ref('followups').on('value', snapshot => {
-                followupList.innerHTML = '';
+                let followups = [];
                 
                 snapshot.forEach(childSnapshot => {
                     const followup = childSnapshot.val();
-                    const followupId = childSnapshot.key;
+                    followup.id = childSnapshot.key;
+                    followups.push(followup);
+                });
+                
+                // 根据日期排序
+                followups.sort((a, b) => new Date(a.followupDate) - new Date(b.followupDate));
+                
+                // 应用搜索过滤
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedDate = dateFilter.value;
+                
+                followups = followups.filter(followup => {
+                    const matchesSearch = 
+                        followup.patientName.toLowerCase().includes(searchTerm) ||
+                        followup.department.toLowerCase().includes(searchTerm);
                     
+                    const matchesDate = !selectedDate || followup.followupDate === selectedDate;
+                    
+                    return matchesSearch && matchesDate;
+                });
+                
+                // 更新显示
+                followupList.innerHTML = '';
+                
+                if (followups.length === 0) {
+                    const emptyMessage = document.createElement('div');
+                    emptyMessage.style.textAlign = 'center';
+                    emptyMessage.style.color = '#718096';
+                    emptyMessage.style.padding = '20px';
+                    emptyMessage.innerHTML = '暂无复诊记录';
+                    followupList.appendChild(emptyMessage);
+                    return;
+                }
+                
+                followups.forEach(followup => {
                     const div = document.createElement('div');
                     div.className = 'followup-item';
                     div.innerHTML = `
                         <div class="patient-info">
                             <div class="patient-name">${followup.patientName}</div>
                             <div class="followup-date">
-                                复诊时间：${followup.followupDate} ${followup.followupTime}
+                                复诊时间：${formatDate(followup.followupDate)} ${followup.followupTime}
                                 <br>
                                 科室：${followup.department}
                                 ${followup.notes ? `<br>备注：${followup.notes}` : ''}
@@ -613,26 +726,44 @@
                         </div>
                         ${isLoggedIn ? `
                             <div class="actions">
-                                <button class="btn btn-edit" onclick="editFollowup('${followupId}')">编辑</button>
-                                <button class="btn btn-delete" onclick="deleteFollowup('${followupId}')">删除</button>
+                                <button class="btn btn-edit" onclick="editFollowup('${followup.id}')">编辑</button>
+                                <button class="btn btn-delete" onclick="deleteFollowup('${followup.id}')">删除</button>
                             </div>
                         ` : ''}
                     `;
                     
                     followupList.appendChild(div);
                 });
-
-                // 如果没有记录，显示提示信息
-                if (!snapshot.exists()) {
-                    const emptyMessage = document.createElement('div');
-                    emptyMessage.style.textAlign = 'center';
-                    emptyMessage.style.color = '#718096';
-                    emptyMessage.style.padding = '20px';
-                    emptyMessage.innerHTML = '暂无复诊记录';
-                    followupList.appendChild(emptyMessage);
-                }
             });
         }
+
+        // 格式化日期显示
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+
+        // 添加搜索和日期过滤事件监听
+        document.getElementById('searchInput').addEventListener('input', loadFollowups);
+        document.getElementById('dateFilter').addEventListener('change', loadFollowups);
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPermission();
+            loadFollowups();
+            
+            // 设置日期选择器的范围
+            const dateFilter = document.getElementById('dateFilter');
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setMonth(today.getMonth() + 3); // 最多显示3个月内的记录
+            
+            dateFilter.min = today.toISOString().split('T')[0];
+            dateFilter.max = maxDate.toISOString().split('T')[0];
+        });
 
         // 删除复诊记录
         function deleteFollowup(followupId) {

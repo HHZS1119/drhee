@@ -323,102 +323,120 @@
         </a>
     </div>
 
-    <div class="admin-container">
+    <div class="admin-container" id="adminContent">
         <h2>预约管理系统</h2>
+        <div id="noPermissionMessage" style="display: none; text-align: center; padding: 50px 20px;">
+            <div style="font-size: 72px; margin-bottom: 20px;">🔒</div>
+            <h3 style="color: #4a5568; margin-bottom: 10px; font-size: 24px;">暂无权限查看</h3>
+            <p style="color: #718096;">请先登录后再访问此页面</p>
+            <button onclick="handleLoginLogout()" style="
+                margin-top: 20px;
+                padding: 10px 20px;
+                background: linear-gradient(135deg, #84fab0, #8fd3f4);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 16px;
+                transition: all 0.3s ease;
+            ">登录</button>
+        </div>
         
-        <div class="function-buttons">
-            <a href="followup.html" class="function-button followup">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                    <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                复诊时间管理
-            </a>
-            <button class="function-button clear" onclick="clearAllAppointments()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="3 6 5 6 21 6"></polyline>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                </svg>
-                清除所有记录
-            </button>
-        </div>
+        <div id="adminPanel" style="display: none;">
+            <div class="function-buttons">
+                <a href="followup.html" class="function-button followup">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    复诊时间管理
+                </a>
+                <button class="function-button clear" onclick="clearAllAppointments()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    清除所有记录
+                </button>
+            </div>
 
-        <div class="filters">
-            <div class="filter-group">
-                <label for="date-filter">日期筛选</label>
-                <input type="date" id="date-filter">
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="date-filter">日期筛选</label>
+                    <input type="date" id="date-filter">
+                </div>
+                <div class="filter-group">
+                    <label for="department-filter">科室筛选</label>
+                    <select id="department-filter">
+                        <option value="">请选择科室</option>
+                        <option value="内科">内科</option>
+                        <option value="外科">外科</option>
+                        <option value="妇产科">妇产科</option>
+                        <option value="脑科">脑科</option>
+                        <option value="骨科">骨科</option>
+                        <option value="心脏科">心脏科</option>
+                        <option value="精神科">精神科</option>
+                        <option value="皮肤科">皮肤科</option>
+                        <option value="神经科">神经科</option>
+                        <option value="眼科">眼科</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="status-filter">状态筛选</label>
+                    <select id="status-filter">
+                        <option value="">全部状态</option>
+                        <option value="pending">待确认</option>
+                        <option value="confirmed">已确认</option>
+                        <option value="completed">已完成</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
             </div>
-            <div class="filter-group">
-                <label for="department-filter">科室筛选</label>
-                <select id="department-filter">
-                    <option value="">请选择科室</option>
-                    <option value="内科">内科</option>
-                    <option value="外科">外科</option>
-                    <option value="妇产科">妇产科</option>
-                    <option value="脑科">脑科</option>
-                    <option value="骨科">骨科</option>
-                    <option value="心脏科">心脏科</option>
-                    <option value="精神科">精神科</option>
-                    <option value="皮肤科">皮肤科</option>
-                    <option value="神经科">神经科</option>
-                    <option value="眼科">眼科</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="status-filter">状态筛选</label>
-                <select id="status-filter">
-                    <option value="">全部状态</option>
-                    <option value="pending">待确认</option>
-                    <option value="confirmed">已确认</option>
-                    <option value="completed">已完成</option>
-                    <option value="cancelled">已取消</option>
-                </select>
-            </div>
-        </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>预约日期</th>
-                    <th>预约时间</th>
-                    <th>患者姓名</th>
-                    <th>联系电话</th>
-                    <th>就诊科室</th>
-                    <th>身份证号</th>
-                    <th>状态</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2024-03-20</td>
-                    <td>09:30</td>
-                    <td>${appointment.isEmergency ? 
-                        `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
-                        appointment.name}</td>
-                    <td>${appointment.phone}</td>
-                    <td>${appointment.department}</td>
-                    <td>${appointment.idCard}</td>
-                    <td><span class="status-pending">待确认</span></td>
-                    <td class="actions">
-                        <button class="btn btn-confirm">确认</button>
-                        <button class="btn btn-cancel">取消</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2024-03-20</td>
-                    <td>10:00</td>
-                    <td>李四</td>
-                    <td>0187654321</td>
-                    <td>外科</td>
-                    <td>987654321</td>
-                    <td><span class="status-confirmed">已确认</span></td>
-                    <td class="actions">
-                        <button class="btn btn-cancel">取消</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>预约日期</th>
+                        <th>预约时间</th>
+                        <th>患者姓名</th>
+                        <th>联系电话</th>
+                        <th>就诊科室</th>
+                        <th>身份证号</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2024-03-20</td>
+                        <td>09:30</td>
+                        <td>${appointment.isEmergency ? 
+                            `<span style="color: #f56565; font-weight: bold;">⚡ ${appointment.name}</span>` : 
+                            appointment.name}</td>
+                        <td>${appointment.phone}</td>
+                        <td>${appointment.department}</td>
+                        <td>${appointment.idCard}</td>
+                        <td><span class="status-pending">待确认</span></td>
+                        <td class="actions">
+                            <button class="btn btn-confirm">确认</button>
+                            <button class="btn btn-cancel">取消</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2024-03-20</td>
+                        <td>10:00</td>
+                        <td>李四</td>
+                        <td>0187654321</td>
+                        <td>外科</td>
+                        <td>987654321</td>
+                        <td><span class="status-confirmed">已确认</span></td>
+                        <td class="actions">
+                            <button class="btn btn-cancel">取消</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -743,44 +761,23 @@
 
         // 修改权限检查函数
         function checkPermission() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const adminName = localStorage.getItem('adminName');
-            const filtersDiv = document.querySelector('.filters');
-            const controlsDiv = document.createElement('div');
-            controlsDiv.style.cssText = `
-                text-align: right;
-                margin-bottom: 20px;
-                display: flex;
-                justify-content: flex-end;
-                gap: 10px;
-            `;
+            const noPermissionMessage = document.getElementById('noPermissionMessage');
+            const adminPanel = document.getElementById('adminPanel');
             
-            // 添加营业状态切换按钮（所有管理员都可以使用）
-            const statusButton = document.createElement('button');
-            statusButton.className = 'btn btn-status';
-            
-            // 从 Firebase 获取当前营业状态
-            database.ref('hospitalStatus').on('value', snapshot => {
-                const isOpen = snapshot.val()?.isOpen ?? true;
-                updateStatusButton(statusButton, isOpen);
-            });
-            
-            statusButton.onclick = function() {
-                toggleHospitalStatus(statusButton);
-            };
-            
-            controlsDiv.appendChild(statusButton);
-            document.querySelector('.admin-container').insertBefore(
-                controlsDiv,
-                document.querySelector('.filters')
-            );
-            
-            // 普通管理员只能查看和处理预约，不能清除所有记录
-            if (adminName === 'Hayden') {
-                const clearButton = document.querySelector('.btn-cancel[onclick="clearAllAppointments()"]');
-                if (clearButton) {
-                    clearButton.style.display = 'none';
-                }
+            if (!isLoggedIn || !adminName) {
+                // 显示无权限提示
+                if (noPermissionMessage) noPermissionMessage.style.display = 'block';
+                if (adminPanel) adminPanel.style.display = 'none';
+                return;
             }
+            
+            // 显示管理面板
+            if (noPermissionMessage) noPermissionMessage.style.display = 'none';
+            if (adminPanel) adminPanel.style.display = 'block';
+            
+            // ... 其余权限检查逻辑 ...
         }
         
         // 修改更新状态按钮的函数
