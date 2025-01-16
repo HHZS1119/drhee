@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>复诊时间管理</title>
+    <title>复诊预约 - Dr. Hee's Clinic</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -510,97 +510,101 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <div class="navbar-left">
-            <a href="index.html" class="back-home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                返回首页
-            </a>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>复诊预约</h1>
+                <p>便捷的预约服务</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="emergency.html">急诊咨询</a></li>
+                    <li><a href="followup.html" class="active">复诊预约</a></li>
+                    <li><a href="admin.html">管理系统</a></li>
+                </ul>
+            </nav>
         </div>
-    </div>
-    
-    <div class="followup-container">
-        <h2>复诊时间查询</h2>
-        
-        <!-- 搜索区域 -->
-        <div class="search-section">
-            <div class="search-form">
-                <div class="form-group">
-                    <input type="text" 
-                           id="searchInput" 
-                           placeholder="搜索患者姓名或科室..."
-                           style="
-                               width: 100%;
-                               padding: 12px;
-                               border: 2px solid #e2e8f0;
-                               border-radius: 8px;
-                               font-size: 1rem;
-                               transition: all 0.3s ease;
-                           "
-                    >
-                </div>
-                <div class="form-group">
-                    <input type="date" 
-                           id="dateFilter" 
-                           style="
-                               width: 100%;
-                               padding: 12px;
-                               border: 2px solid #e2e8f0;
-                               border-radius: 8px;
-                               font-size: 1rem;
-                               transition: all 0.3s ease;
-                           "
-                    >
+        <div class="followup-container">
+            <h2>复诊预约</h2>
+            
+            <!-- 搜索区域 -->
+            <div class="search-section">
+                <div class="search-form">
+                    <div class="form-group">
+                        <input type="text" 
+                               id="searchInput" 
+                               placeholder="搜索患者姓名或科室..."
+                               style="
+                                   width: 100%;
+                                   padding: 12px;
+                                   border: 2px solid #e2e8f0;
+                                   border-radius: 8px;
+                                   font-size: 1rem;
+                                   transition: all 0.3s ease;
+                               "
+                        >
+                    </div>
+                    <div class="form-group">
+                        <input type="date" 
+                               id="dateFilter" 
+                               style="
+                                   width: 100%;
+                                   padding: 12px;
+                                   border: 2px solid #e2e8f0;
+                                   border-radius: 8px;
+                                   font-size: 1rem;
+                                   transition: all 0.3s ease;
+                               "
+                        >
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- 管理员操作区域 -->
-        <div id="adminControls" style="display: none;">
-            <div class="add-followup">
-                <div class="add-form">
-                    <div class="form-group">
-                        <label for="patientName">患者姓名</label>
-                        <input type="text" id="patientName" required>
+            
+            <!-- 管理员操作区域 -->
+            <div id="adminControls" style="display: none;">
+                <div class="add-followup">
+                    <div class="add-form">
+                        <div class="form-group">
+                            <label for="patientName">患者姓名</label>
+                            <input type="text" id="patientName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="followupDate">复诊日期</label>
+                            <input type="date" id="followupDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="followupTime">复诊时间</label>
+                            <input type="time" id="followupTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="department">就诊科室</label>
+                            <select id="department" required>
+                                <option value="">请选择科室</option>
+                                <option value="内科">内科</option>
+                                <option value="外科">外科</option>
+                                <option value="妇产科">妇产科</option>
+                                <option value="脑科">脑科</option>
+                                <option value="骨科">骨科</option>
+                                <option value="心脏科">心脏科</option>
+                                <option value="精神科">精神科</option>
+                                <option value="皮肤科">皮肤科</option>
+                                <option value="神经科">神经科</option>
+                                <option value="眼科">眼科</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">备注</label>
+                            <input type="text" id="notes" placeholder="可选">
+                        </div>
+                        <button class="btn btn-add" onclick="addFollowup()">添加复诊记录</button>
                     </div>
-                    <div class="form-group">
-                        <label for="followupDate">复诊日期</label>
-                        <input type="date" id="followupDate" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="followupTime">复诊时间</label>
-                        <input type="time" id="followupTime" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="department">就诊科室</label>
-                        <select id="department" required>
-                            <option value="">请选择科室</option>
-                            <option value="内科">内科</option>
-                            <option value="外科">外科</option>
-                            <option value="妇产科">妇产科</option>
-                            <option value="脑科">脑科</option>
-                            <option value="骨科">骨科</option>
-                            <option value="心脏科">心脏科</option>
-                            <option value="精神科">精神科</option>
-                            <option value="皮肤科">皮肤科</option>
-                            <option value="神经科">神经科</option>
-                            <option value="眼科">眼科</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="notes">备注</label>
-                        <input type="text" id="notes" placeholder="可选">
-                    </div>
-                    <button class="btn btn-add" onclick="addFollowup()">添加复诊记录</button>
                 </div>
             </div>
-        </div>
-        
-        <div class="followup-list" id="followupList">
-            <!-- 复诊记录将在这里动态显示 -->
+            
+            <div class="followup-list" id="followupList">
+                <!-- 复诊记录将在这里动态显示 -->
+            </div>
         </div>
     </div>
 
@@ -873,7 +877,7 @@
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             
             if (!isLoggedIn) {
-                title.textContent = '复诊时间查询';
+                title.textContent = '复诊预约';
                 // 添加提示信息
                 const infoDiv = document.createElement('div');
                 infoDiv.style.textAlign = 'center';

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>紧急会诊 - DR.Hee</title>
+    <title>急诊咨询 - Dr. Hee's Clinic</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <style>
@@ -273,218 +273,234 @@
     </style>
 </head>
 <body>
-    <div style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(120deg, #ff9a9e 0%, #fad0c4 100%);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 9999;
-    ">
-        <div style="
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            max-width: 90%;
-            width: 500px;
-        ">
-            <div style="font-size: 72px; margin-bottom: 20px;">🔧</div>
-            <h2 style="
-                color: #2d3748;
-                font-size: 24px;
-                margin-bottom: 15px;
-            ">暂无权限查看</h2>
-            <p style="
-                color: #718096;
-                font-size: 16px;
-                line-height: 1.6;
-                margin-bottom: 20px;
-            ">系统正在维护升级中，我们正在努力修复。<br>给您带来不便深表歉意。</p>
-            <div style="
-                width: 100%;
-                height: 4px;
-                background: linear-gradient(90deg, #ff9a9e, #fad0c4);
-                border-radius: 2px;
-                margin: 20px 0;
-                position: relative;
-                overflow: hidden;
-            ">
-                <div style="
-                    position: absolute;
-                    width: 50%;
-                    height: 100%;
-                    background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.3));
-                    animation: loading 1.5s infinite;
-                "></div>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>急诊咨询</h1>
+                <p>24小时在线服务</p>
             </div>
-        </div>
-    </div>
-
-    <style>
-        @keyframes loading {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(200%);
-            }
-        }
-    </style>
-
-    <!-- 隐藏原有内容 -->
-    <div style="display: none;">
-        <a href="index.html" class="back-btn">← 返回首页</a>
-
-        <div class="emergency-container">
-            <h2>⚡ 紧急会诊</h2>
-
-            <div class="emergency-info">
-                <h3>紧急会诊说明：</h3>
+            <nav>
                 <ul>
-                    <li>此功能仅用于<strong>紧急情况</strong>，如遇到危及生命的症状。</li>
-                    <li>提交紧急预约后，请立即前往医院就诊。</li>
-                    <li>医院将优先处理紧急会诊患者。</li>
-                    <li>如非紧急情况，请使用普通预约通道。</li>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="emergency.html" class="active">急诊咨询</a></li>
+                    <li><a href="followup.html">复诊预约</a></li>
+                    <li><a href="admin.html">管理系统</a></li>
                 </ul>
+            </nav>
+        </div>
+        <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, #ff9a9e 0%, #fad0c4 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        ">
+            <div style="
+                background: rgba(255, 255, 255, 0.95);
+                padding: 40px;
+                border-radius: 20px;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                max-width: 90%;
+                width: 500px;
+            ">
+                <div style="font-size: 72px; margin-bottom: 20px;">🔧</div>
+                <h2 style="
+                    color: #2d3748;
+                    font-size: 24px;
+                    margin-bottom: 15px;
+                ">暂无权限查看</h2>
+                <p style="
+                    color: #718096;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    margin-bottom: 20px;
+                ">系统正在维护升级中，我们正在努力修复。<br>给您带来不便深表歉意。</p>
+                <div style="
+                    width: 100%;
+                    height: 4px;
+                    background: linear-gradient(90deg, #ff9a9e, #fad0c4);
+                    border-radius: 2px;
+                    margin: 20px 0;
+                    position: relative;
+                    overflow: hidden;
+                ">
+                    <div style="
+                        position: absolute;
+                        width: 50%;
+                        height: 100%;
+                        background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0.3));
+                        animation: loading 1.5s infinite;
+                    "></div>
+                </div>
             </div>
-
-            <button class="emergency-btn" onclick="submitEmergencyAppointment()">
-                立即紧急预约
-            </button>
         </div>
 
-        <script>
-            // Firebase 配置
-            const firebaseConfig = {
-                apiKey: "AIzaSyC1DSe4UMv4hQo9zQB62XmPLFxT4vQJ5H0",
-                authDomain: "drhee-d5eb1.firebaseapp.com",
-                databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app",
-                projectId: "drhee-d5eb1",
-                storageBucket: "drhee-d5eb1.appspot.com",
-                messagingSenderId: "967372296466",
-                appId: "1:967372296466:web:b37f5c46c60e10dd0e9bf3"
-            };
-            
-            // 初始化 Firebase
-            firebase.initializeApp(firebaseConfig);
-            const database = firebase.database();
+        <style>
+            @keyframes loading {
+                0% {
+                    transform: translateX(-100%);
+                }
+                100% {
+                    transform: translateX(200%);
+                }
+            }
+        </style>
 
-            // 提交紧急预约
-            function submitEmergencyAppointment() {
-                // 创建紧急预约弹窗
-                const modal = document.createElement('div');
-                modal.className = 'emergency-modal';
+        <!-- 隐藏原有内容 -->
+        <div style="display: none;">
+            <a href="index.html" class="back-btn">← 返回首页</a>
+
+            <div class="emergency-container">
+                <h2>⚡ 紧急会诊</h2>
+
+                <div class="emergency-info">
+                    <h3>紧急会诊说明：</h3>
+                    <ul>
+                        <li>此功能仅用于<strong>紧急情况</strong>，如遇到危及生命的症状。</li>
+                        <li>提交紧急预约后，请立即前往医院就诊。</li>
+                        <li>医院将优先处理紧急会诊患者。</li>
+                        <li>如非紧急情况，请使用普通预约通道。</li>
+                    </ul>
+                </div>
+
+                <button class="emergency-btn" onclick="submitEmergencyAppointment()">
+                    立即紧急预约
+                </button>
+            </div>
+
+            <script>
+                // Firebase 配置
+                const firebaseConfig = {
+                    apiKey: "AIzaSyC1DSe4UMv4hQo9zQB62XmPLFxT4vQJ5H0",
+                    authDomain: "drhee-d5eb1.firebaseapp.com",
+                    databaseURL: "https://drhee-d5eb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+                    projectId: "drhee-d5eb1",
+                    storageBucket: "drhee-d5eb1.appspot.com",
+                    messagingSenderId: "967372296466",
+                    appId: "1:967372296466:web:b37f5c46c60e10dd0e9bf3"
+                };
                 
-                modal.innerHTML = `
-                    <div class="emergency-content">
-                        <div class="emergency-title">
-                            <span style="color: #e53e3e;">⚡</span>
-                            紧急预约
+                // 初始化 Firebase
+                firebase.initializeApp(firebaseConfig);
+                const database = firebase.database();
+
+                // 提交紧急预约
+                function submitEmergencyAppointment() {
+                    // 创建紧急预约弹窗
+                    const modal = document.createElement('div');
+                    modal.className = 'emergency-modal';
+                    
+                    modal.innerHTML = `
+                        <div class="emergency-content">
+                            <div class="emergency-title">
+                                <span style="color: #e53e3e;">⚡</span>
+                                紧急预约
+                            </div>
+                            <input type="text" 
+                                   class="emergency-input" 
+                                   placeholder="请输入患者姓名"
+                                   autofocus>
+                            <div class="emergency-buttons">
+                                <button class="emergency-submit">确认预约</button>
+                                <button class="emergency-cancel">取消</button>
+                            </div>
                         </div>
-                        <input type="text" 
-                               class="emergency-input" 
-                               placeholder="请输入患者姓名"
-                               autofocus>
-                        <div class="emergency-buttons">
-                            <button class="emergency-submit">确认预约</button>
-                            <button class="emergency-cancel">取消</button>
-                        </div>
-                    </div>
-                `;
-                
-                document.body.appendChild(modal);
-                
-                // 获取元素
-                const input = modal.querySelector('.emergency-input');
-                const submitBtn = modal.querySelector('.emergency-submit');
-                const cancelBtn = modal.querySelector('.emergency-cancel');
-                
-                // 添加事件监听
-                submitBtn.addEventListener('click', () => {
-                    const name = input.value.trim();
-                    if (!name) {
-                        input.style.borderColor = '#e53e3e';
-                        return;
-                    }
+                    `;
                     
-                    // 创建预约记录
-                    const now = new Date();
-                    const year = now.getFullYear();
-                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                    const day = String(now.getDate()).padStart(2, '0');
-                    const hours = String(now.getHours()).padStart(2, '0');
-                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                    document.body.appendChild(modal);
                     
-                    const emergencyAppointment = {
-                        id: Date.now(),
-                        date: `${year}-${month}-${day}`,
-                        time: `${hours}:${minutes}`,
-                        name: name,
-                        phone: '紧急',
-                        department: '紧急',
-                        idCard: '紧急',
-                        status: 'pending',
-                        isEmergency: true
-                    };
+                    // 获取元素
+                    const input = modal.querySelector('.emergency-input');
+                    const submitBtn = modal.querySelector('.emergency-submit');
+                    const cancelBtn = modal.querySelector('.emergency-cancel');
                     
-                    database.ref('appointments').push(emergencyAppointment)
-                        .then(() => {
+                    // 添加事件监听
+                    submitBtn.addEventListener('click', () => {
+                        const name = input.value.trim();
+                        if (!name) {
+                            input.style.borderColor = '#e53e3e';
+                            return;
+                        }
+                        
+                        // 创建预约记录
+                        const now = new Date();
+                        const year = now.getFullYear();
+                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                        const day = String(now.getDate()).padStart(2, '0');
+                        const hours = String(now.getHours()).padStart(2, '0');
+                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                        
+                        const emergencyAppointment = {
+                            id: Date.now(),
+                            date: `${year}-${month}-${day}`,
+                            time: `${hours}:${minutes}`,
+                            name: name,
+                            phone: '紧急',
+                            department: '紧急',
+                            idCard: '紧急',
+                            status: 'pending',
+                            isEmergency: true
+                        };
+                        
+                        database.ref('appointments').push(emergencyAppointment)
+                            .then(() => {
+                                modal.remove();
+                                showEmergencySuccessAlert();
+                            });
+                    });
+                    
+                    cancelBtn.addEventListener('click', () => {
+                        modal.remove();
+                    });
+                    
+                    // 点击背景关闭
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
                             modal.remove();
-                            showEmergencySuccessAlert();
-                        });
-                });
-                
-                cancelBtn.addEventListener('click', () => {
-                    modal.remove();
-                });
-                
-                // 点击背景关闭
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.remove();
-                    }
-                });
-                
-                // 按ESC关闭
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        modal.remove();
-                    }
-                });
-                
-                // 自动聚焦输入框
-                input.focus();
-            }
+                        }
+                    });
+                    
+                    // 按ESC关闭
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            modal.remove();
+                        }
+                    });
+                    
+                    // 自动聚焦输入框
+                    input.focus();
+                }
 
-            // 显示紧急预约成功提示
-            function showEmergencySuccessAlert() {
-                const successDiv = document.createElement('div');
-                successDiv.className = 'success-alert';
-                
-                successDiv.innerHTML = `
-                    <div class="success-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                    <div class="success-title">紧急预约已提交！</div>
-                    <div class="success-message">请立即前往医院就诊</div>
-                `;
-                
-                document.body.appendChild(successDiv);
-                
-                setTimeout(() => {
-                    successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
-                    setTimeout(() => successDiv.remove(), 500);
-                }, 2000);
-            }
-        </script>
+                // 显示紧急预约成功提示
+                function showEmergencySuccessAlert() {
+                    const successDiv = document.createElement('div');
+                    successDiv.className = 'success-alert';
+                    
+                    successDiv.innerHTML = `
+                        <div class="success-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <div class="success-title">紧急预约已提交！</div>
+                        <div class="success-message">请立即前往医院就诊</div>
+                    `;
+                    
+                    document.body.appendChild(successDiv);
+                    
+                    setTimeout(() => {
+                        successDiv.style.animation = 'successIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse';
+                        setTimeout(() => successDiv.remove(), 500);
+                    }, 2000);
+                }
+            </script>
+        </div>
     </div>
 </body>
 </html> 
